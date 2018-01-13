@@ -1,0 +1,20 @@
+{
+  "name": "mevn-drive",
+  "version": "0.1.0",
+  "description": "Browser based storage build on the mevn-stack",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type":"git",
+    "url": "https://github.com/Kam1ni/mevn-drive"
+  },
+  "author": "Kamil Krzysztof Kulach (kamil.k@live.be)",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.2",
+    "express-fileupload": "^0.3.0",
+    "mongoose": "^4.13.9"
+  }
+}
