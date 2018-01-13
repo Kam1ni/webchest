@@ -3,7 +3,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 
 const defaultServerFile = {
-	host: "localhost",
+	host: "0.0.0.0",
 	port: 3000,
 	fileDir: path.resolve(__dirname, "../files"),
 	db:{

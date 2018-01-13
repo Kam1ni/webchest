@@ -7,14 +7,17 @@
     "start": "node index.js"
   },
   "repository": {
-    "type":"git",
+    "type": "git",
     "url": "https://github.com/Kam1ni/mevn-drive"
   },
   "author": "Kamil Krzysztof Kulach (kamil.k@live.be)",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
     "express": "^4.16.2",
     "express-fileupload": "^0.3.0",
+    "jsonwebtoken": "^8.1.0",
     "mongoose": "^4.13.9"
   }
 }
