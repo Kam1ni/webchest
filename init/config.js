@@ -8,20 +8,23 @@ const defaultServerFile = {
 	fileDir: path.resolve(__dirname, "../files"),
 	db:{
 		host: "mongodb://localhost:27017",
+		database: "mevn-drive",
 		username: "NOT YET IMPLEMENTED",
 		password: "NOT YET IMPLEMENTED"
-	} 
+	}
 }
 
 const defaultAuthFile = {
 	users: [
 		{username: "admin", password: "admin", isAdmin: true, _id: mongoose.Types.ObjectId()}
-	]
+	],
+	secret:"secret"
 }
 
 function createFileIfNotExist(filename, config){
 	if (!fs.existsSync(path.resolve(__dirname, "../config/", filename + ".json"))){
 		fs.writeFileSync(path.resolve(__dirname, "../config/", filename + ".json"), JSON.stringify(config, null, 2));
+		console.log("Created config file "+ filename);
 	}
 }
 
