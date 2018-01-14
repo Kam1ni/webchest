@@ -16,12 +16,12 @@ const fileSchema = new mongoose.Schema({
 		}
 	},
 	owner: {
-		type: mongoose.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		required: true,
 		ref: "User"
 	},
 	parent: {
-		type: mongoose.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		required: true,
 		ref: "Directory"
 	},

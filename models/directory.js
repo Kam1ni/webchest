@@ -14,12 +14,12 @@ const directorySchema = new mongoose.Schema({
 		}
 	},
 	owner: {
-		type: mongoose.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		required: true,
 		ref: "User"
 	},
 	parent: {
-		type: mongoose.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		required: true,
 		ref: "Directory"
 	}
@@ -74,4 +74,4 @@ directorySchema.pre("remove", async function(next){
 	next();
 });
 
-module.exports = Directory = mongoose.model(directorySchema);
+module.exports = Directory = mongoose.model("Directory", directorySchema);

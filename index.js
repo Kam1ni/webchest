@@ -5,15 +5,17 @@ const cors = require("cors");
 const http = require("http");
 
 init().then(function(){
-	console.log("Creating server");
 	const config = require("./config");
-
 	const app = express();
 
+	const auth = require("./middlewares/auth");
+	
 	app.use(cors());
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({extended:true}));
 	app.use("/auth", require("./routes/auth"));
+	app.use("/dir", auth.authenticate, require("./routes/directory"));
+	app.use("/file", auth.authenticate, require("./routes/file"));
 
 	app.all("/", function(req,res,next, err){
 		console.error(err.message);
