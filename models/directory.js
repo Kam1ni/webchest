@@ -48,4 +48,30 @@ directorySchema.methods.userCanEdit = async function(user){
 	return false;
 }
 
+directorySchema.pre("save", async function(next){
+	if (!this.populated("parent")){
+		await File.populate(this, {path:"parent"});
+	}
+	if (!this.populated("owner")){
+		await File.populate(this, {path:"owner"});
+	}
+	if (!await this.parent.userCanEdit(this.owner)){
+		throw new Error("Access denied");
+	}
+
+	next();
+});
+
+directorySchema.pre("remove", async function(next){
+	await this.populateContent();
+	for (let dir of this.content.directories){
+		dir.remove();
+	}
+	for (let file of this.content.files){
+		file.remove();
+	}
+
+	next();
+});
+
 module.exports = Directory = mongoose.model(directorySchema);

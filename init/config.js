@@ -34,4 +34,9 @@ module.exports = function(){
 	}
 	createFileIfNotExist("server", defaultServerFile);
 	createFileIfNotExist("auth", defaultAuthFile);
+
+	const config = require("../config");
+	if (!fs.existsSync(config.server.fileDir)){
+		fs.mkdirSync(config.server.fileDir);
+	}
 }
