@@ -89,4 +89,19 @@ fileSchema.pre("remove", async function(next){
 	next();
 });
 
+fileSchema.methods.userCanView = async function(user){
+	if (this.owner.equals(user)){
+		return true;
+	}
+	return false;
+}
+
+fileSchema.methods.userCanEdit = async function(user){
+	if (this.owner.equals(user)){
+		return true;
+	}
+	return false;
+}
+
+
 module.exports = File = mongoose.model("File", fileSchema);
