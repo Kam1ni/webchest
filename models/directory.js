@@ -48,15 +48,30 @@ directorySchema.methods.userCanEdit = async function(user){
 	return false;
 }
 
-directorySchema.pre("save", async function(next){
+directorySchema.pre("validate", async function(next){
+	let promise;
 	if (!this.populated("parent")){
-		await File.populate(this, {path:"parent"});
+		promise = this.populate({path:"parent"});
 	}
 	if (!this.populated("owner")){
-		await File.populate(this, {path:"owner"});
+		promise.populate({path:"owner"});
 	}
+	await promise.execPopulate();
 	if (!await this.parent.userCanEdit(this.owner)){
 		throw new Error("Access denied");
+	}
+
+	if (this.parent.equals(this)){
+		throw new Error("Parrent can not be the same object");
+	}
+
+	let parent = this.parent;
+	while (parent != null){
+		await parent.populate({path: parent}).execPopulate();
+		parent = parent.parent;
+		if (parent.equals(this)){
+			throw new Error("Infinite directory loop");
+		}
 	}
 
 	next();

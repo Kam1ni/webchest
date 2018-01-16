@@ -53,10 +53,10 @@ fileSchema.pre("validate", async function(next){
 	this.size = stats.size;
 
 	if (!this.populated("parent")){
-		await File.populate(this, {path:"parent"});
+		await this.populate({path:"parent"}).execPopulate();
 	}
 	if (!this.populated("owner")){
-		await File.populate(this, {path:"owner"});
+		await this.populate({path:"owner"}).execPopulate();
 	}
 	if (!await this.parent.userCanEdit(this.owner)){
 		throw new Error("Access denied");
