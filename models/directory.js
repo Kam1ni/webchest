@@ -24,13 +24,10 @@ const directorySchema = new mongoose.Schema({
 	}
 });
 
-directorySchema.methods.populateContent = async function(){
+directorySchema.methods.getContent = async function(){
 	let directories = await Directory.find({parent:this});
 	let files = await File.find({parent: this});
-	this.content = {
-		directories,
-		files
-	};
+	return {directories, files}
 }
 
 directorySchema.methods.userCanView = async function(user){
@@ -48,14 +45,13 @@ directorySchema.methods.userCanEdit = async function(user){
 }
 
 directorySchema.pre("validate", async function(next){
-	let promise;
+	let populatedFields = [];
 	if (!this.populated("parent")){
-		promise = this.populate({path:"parent"});
+		await this.populate("parent").execPopulate();
 	}
 	if (!this.populated("owner")){
-		promise.populate({path:"owner"});
+		await this.populate("owner").execPopulate();
 	}
-	await promise.execPopulate();
 	if (this.parent && !await this.parent.userCanEdit(this.owner)){
 		throw new Error("Access denied");
 	}
@@ -66,9 +62,9 @@ directorySchema.pre("validate", async function(next){
 
 	let parent = this.parent;
 	while (parent != null){
-		await parent.populate({path: parent}).execPopulate();
+		await parent.populate({path: 'parent'}).execPopulate();
 		parent = parent.parent;
-		if (parent.equals(this)){
+		if (this.equals(parent)){
 			throw new Error("Infinite directory loop");
 		}
 	}
@@ -77,11 +73,11 @@ directorySchema.pre("validate", async function(next){
 });
 
 directorySchema.pre("remove", async function(next){
-	await this.populateContent();
-	for (let dir of this.content.directories){
+	let content = await this.getContent();
+	for (let dir of content.directories){
 		dir.remove();
 	}
-	for (let file of this.content.files){
+	for (let file of content.files){
 		file.remove();
 	}
 

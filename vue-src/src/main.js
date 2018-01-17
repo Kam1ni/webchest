@@ -8,9 +8,7 @@ Vue.use(VueResource);
 Vue.http.options.root = "http://localhost:3000/";
 Vue.http.interceptors.push(function(req,next){
 	if (localStorage.getItem("token")){
-		console.log(req);
 		req.headers.set('Authorization', localStorage.getItem("token"));
-		console.log(req.headers);
 	}
 	next();
 });

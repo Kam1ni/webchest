@@ -30,8 +30,8 @@ router.get("/:directoryId", async function(req,res,next){
 			err.status = 401;
 			throw err;
 		}
-		await dir.populateContent();
-		res.json(dir);
+		let content = await dir.getContent();
+		res.json({...dir._doc, ...content});
 	}catch(err){
 		next(err);
 	}
