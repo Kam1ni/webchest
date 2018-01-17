@@ -2,6 +2,7 @@
 	<v-layout row wrap>
 			<v-flex xs12>
 				<v-toolbar divider="/" :large="true">
+					<a @click="goBack()"><v-icon>arrow_back</v-icon></a>
 					<template v-for="(item, index) in history" >
 						/<a :key="index" @click="navigateTo(index)">
 							{{item.name}}
@@ -32,6 +33,12 @@
 			navigateTo(index){
 				this.$router.push("/storage/" + this.history[index]._id);
 				this.history.splice(index + 1, this.history.length);
+			},
+			goBack(){
+				if (this.history.length > 1){
+					let lastIndex = this.history.length - 2;
+					this.navigateTo(lastIndex);
+				}
 			}
 		},
 		props:[
