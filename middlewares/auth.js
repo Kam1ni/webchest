@@ -6,7 +6,7 @@ module.exports = {
 	authenticate: async function(req,res,next){
 		try{
 			req.user = await User.findOne({tokens:req.headers.authorization});
-			if (req.user){
+			if (!req.user){
 				throw new Error("Invalid token");
 			}
 			next();
@@ -18,7 +18,7 @@ module.exports = {
 	admin: async function(req,res,next){
 		try{
 			req.user = await User.findOne({tokens:req.headers.authorization});
-			if (req.user){
+			if (!req.user){
 				throw new Error("Invalid token");
 			}
 			if (!req.user.isAdmin){

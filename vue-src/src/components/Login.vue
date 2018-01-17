@@ -35,7 +35,6 @@
 				try{
 					console.log("Logging in");
 					let response = await this.$http.post("auth/login", {username: this.username, password: this.password});
-					console.log(response);
 					console.log(response.body.token);
 					this.$emit("login", response.body.token);
 				}catch(err){

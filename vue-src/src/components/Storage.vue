@@ -9,9 +9,9 @@
 					</v-breadcrumbs>
 				</v-flex>
 			</v-layout>
-			<v-layout row wrap fill-height @contextmenu.prevent="openMenu($event)" @click="closeContextMenu()">
-				<v-flex xs12 fill-height>
-					<v-list class="fill-height" v-if="dir">
+			<v-layout row wrap fill-height >
+				<v-flex xs12 fill-height @contextmenu.prevent="showMenu($event)">
+					<v-list class="fill-height" v-if="dir" >
 						<v-list-tile avatar v-for="item in dir.directories" :key="item._id" @click="openDir(item._id)">
 							<v-list-tile-avatar>
 								<v-icon>folder</v-icon>
@@ -30,7 +30,7 @@
 						</v-list-tile>
 					</v-list>
 				</v-flex>
-				<v-card id="contextMenu" v-if="contextMenuOpen" @blur.native="closeContextMenu()" :style="contextStyle">
+				<v-menu offset-y v-model="showContextMenu" absolute :position-x="contextX" :position-y="contextY">
 					<v-list>
 						<v-list-tile @click="newDirClicked()">
 							<v-list-tile-avatar>
@@ -41,12 +41,15 @@
 							</v-list-tile-content>
 						</v-list-tile>
 					</v-list>
-				</v-card>
+				</v-menu>
+				<app-text-field-dialog v-model="textEditField.show" :title="textEditField.title" :label="textEditField.label" @submit="textEditField.submit"></app-text-field-dialog>
 			</v-layout>
 		</v-container>
 </template>
 
 <script>
+	import TextFieldDialogVue from './common/TextFieldDialog.vue';
+
 	export default {
 		data(){
 			return {
@@ -54,10 +57,15 @@
 				items: [{name: "Dir 1", id: 1}, {name: "Dir 2", id: 2}, {name: "Dir 3", id: 3}],
 				dir: null,
 				history: [{name:"root", _id:""}],
-				contextMenuOpen: false,
-				contextStyle: {
-					top: 0,
-					left: 0
+				showContextMenu: false,
+				contextX: 0,
+				contextY: 0,
+				textEditField:{
+					show: false,
+					submit(){
+					},
+					title: "",
+					label: ""
 				}
 			}
 		},
@@ -76,16 +84,30 @@
 				this.$router.push({path:'/storage/' + id});
 				console.log()
 			},
-			openMenu(event){
-				this.contextMenuOpen = true;
-				this.contextStyle.top = event.y + "px";
-				this.contextStyle.left = event.x + "px";
+			showMenu(e){
+				this.showContextMenu = false;
+				this.contextX = e.x;
+				this.contextY = e.y;
+				this.$nextTick(() => {
+          			this.showContextMenu = true
+        		});
 			},
-			closeContextMenu(){
-				this.contextMenuOpen=false;
-			},
-			async newDirClicked(){
+			newDirClicked(){
 				console.log("new Dir clicked");
+				this.textEditField.submit = async (e) => {
+					let dir = {name :e, parent: this.id};
+					console.log(dir);
+					try{
+						let response = await this.dirResource.save({}, dir);
+						console.log(response);
+						this.dir.directories.push(response);
+					}catch(err){
+						console.log(err.body.message);
+					}
+				}
+				this.textEditField.title = "New Folder";
+				this.textEditField.label = "Folder name";
+				this.textEditField.show = true;
 			}
 		},
 		async created(){
@@ -98,8 +120,10 @@
 			}catch(err){
 				console.log(err);
 			}
+		},
+		components:{
+			'app-text-field-dialog':TextFieldDialogVue
 		}
-
 	}
 </script>
 

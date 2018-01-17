@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.get("/", async function(req,res,next){
 	try{
-		let directories = await Directory.find({parent: {$exists: false}, owner:req.user});
-		let files = await File.find({parent: {$exists: false}, owner:req.user});
+		let directories = await Directory.find({parent: null, owner:req.user});
+		let files = await File.find({parent: null, owner:req.user});
 		res.json({
 			directories,
 			files

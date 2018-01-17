@@ -20,7 +20,6 @@ const directorySchema = new mongoose.Schema({
 	},
 	parent: {
 		type: mongoose.Schema.Types.ObjectId,
-		required: true,
 		ref: "Directory"
 	}
 });
@@ -35,14 +34,14 @@ directorySchema.methods.populateContent = async function(){
 }
 
 directorySchema.methods.userCanView = async function(user){
-	if (this.owner.equals(user)){
+	if (this.owner.equals(user._id)){
 		return true;
 	}
 	return false;
 }
 
 directorySchema.methods.userCanEdit = async function(user){
-	if (this.owner.equals(user)){
+	if (this.owner.equals(user._id)){
 		return true;
 	}
 	return false;
@@ -57,11 +56,11 @@ directorySchema.pre("validate", async function(next){
 		promise.populate({path:"owner"});
 	}
 	await promise.execPopulate();
-	if (!await this.parent.userCanEdit(this.owner)){
+	if (this.parent && !await this.parent.userCanEdit(this.owner)){
 		throw new Error("Access denied");
 	}
 
-	if (this.parent.equals(this)){
+	if (this.equals(this.parent)){
 		throw new Error("Parrent can not be the same object");
 	}
 

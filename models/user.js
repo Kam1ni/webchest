@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const mongooseHidden = require("mongoose-hidden");
 const mongooseBcrypt = require("mongoose-bcrypt");
 
 const userSchema = new mongoose.Schema({
@@ -34,7 +33,6 @@ const userSchema = new mongoose.Schema({
 	}
 });
 
-userSchema.plugin(mongooseHidden());
 userSchema.plugin(mongooseBcrypt, {rounds: 10});
 
 userSchema.pre("validate", function(next){
