@@ -10,9 +10,9 @@
 				<v-text-field label="Username" v-model="username" required></v-text-field>
 				<v-text-field label="password" v-model="password" required type="password"></v-text-field>
 			</v-card-text>
-			<v-card-avtions>
+			<v-card-actions>
 				<v-btn flat>Login</v-btn>
-			</v-card-avtions>
+			</v-card-actions>
 		</v-form>
 	</v-card>
 </template>

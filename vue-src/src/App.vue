@@ -9,13 +9,10 @@
 					<router-view/>
 				</v-container>
 			</v-content>
-			<v-footer app>
-
-			</v-footer>
 		</div>
-		<v-layout row justify-center wrap align-center class="teal-background" fill-height>
+		<v-layout row justify-center wrap align-center class="teal-background" fill-height v-if="!loggedIn">
 			<v-flex xs10 sm8 md6>
-				<app-login v-if="!loggedIn"></app-login>
+				<app-login></app-login>
 			</v-flex>
 		</v-layout>
 	</v-app>
