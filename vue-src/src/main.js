@@ -2,6 +2,16 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import Vuetify from 'vuetify';
+import VueResource from 'vue-resource';
+
+Vue.use(VueResource);
+Vue.http.options.root = "http://localhost:3000/";
+Vue.http.interceptors.push(function(req,next){
+	if (localStorage.getItem("token")){
+		req.headers.Authorization = localStorage.getItem("token");
+	}
+	next();
+});
 
 Vue.config.productionTip = false
 Vue.use(Vuetify, {
@@ -17,5 +27,5 @@ new Vue({
 	el: '#app',
 	router,
 	components: { App },
-	template: '<App/>'
+	template: '<App/>',
 })

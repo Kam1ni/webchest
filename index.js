@@ -17,10 +17,10 @@ init().then(function(){
 	app.use("/dir", auth.authenticate, require("./routes/directory"));
 	app.use("/file", auth.authenticate, require("./routes/file"));
 
-	app.all("/", function(req,res,next, err){
+	app.use(function(err, req,res,next){
 		console.error(err.message);
 		console.error(err.stack);
-		res.status(err.status || 500).text(err.message);
+		res.status(err.status || 500).json({message: err.message});
 	});
 
 	const httpServer = http.createServer(app);

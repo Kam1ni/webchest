@@ -13,7 +13,7 @@ router.get("/", mAuth.authenticate, async function(req,res,next){
 router.post("/login", async function(req, res, next){
 	try{
 		let user = await User.findOne({username: req.body.username});
-		if (!valid){
+		if (!user){
 			throw new Error("Invalid login");
 		}
 		let valid = await user.verifyPassword(req.body.password);
