@@ -1,50 +1,50 @@
 <template>
-		<v-container fluid style="padding: 0px;">
-			<app-nav :current="dir"/>
-			<v-layout row wrap fill-height >
-				<v-flex xs12 fill-height @contextmenu.prevent="showMenu($event)">
-					<v-list class="fill-height" v-if="dir" >
-						<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'dir')" avatar v-for="item in dir.directories" :key="item._id" @click="openDir(item._id)">
-							<v-list-tile-avatar>
-								<v-icon>folder</v-icon>
-							</v-list-tile-avatar>
-							<v-list-tile-content>
-								<v-list-tile-title v-text="item.name"></v-list-tile-title>
-							</v-list-tile-content>
-						</v-list-tile>
-						<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'file')" avatar v-for="item in dir.files" :key="item._id" @click="openDir(item._id)">
-							<v-list-tile-avatar>
-								<v-icon>file</v-icon>
-							</v-list-tile-avatar>
-							<v-list-tile-content>
-								<v-list-tile-title v-text="item.name"></v-list-tile-title>
-							</v-list-tile-content>
-						</v-list-tile>
-					</v-list>
-				</v-flex>
-				<v-menu offset-y v-model="showContextMenu" absolute :position-x="contextX" :position-y="contextY">
-					<v-list>
-						<v-list-tile @click="newDirClicked()">
-							<v-list-tile-avatar>
-								<v-icon>folder</v-icon>
-							</v-list-tile-avatar>
-							<v-list-tile-content>
-								New Folder
-							</v-list-tile-content>
-						</v-list-tile>
-						<v-list-tile @click="deleteClicked()" v-if="clickedItem.item">
-							<v-list-tile-avatar>
-								<v-icon>delete</v-icon>
-							</v-list-tile-avatar>
-							<v-list-tile-content>
-								Delete
-							</v-list-tile-content>
-						</v-list-tile>
-					</v-list>
-				</v-menu>
-				<app-text-field-dialog v-model="textEditField.show" :title="textEditField.title" :label="textEditField.label" @submit="textEditField.submit"></app-text-field-dialog>
-			</v-layout>
-		</v-container>
+	<v-container fluid style="padding: 0px;">
+		<app-nav :current="dir"/>
+		<v-layout row wrap fill-height >
+			<v-flex xs12 fill-height @contextmenu.prevent="showMenu($event)">
+				<v-list class="fill-height" v-if="dir" >
+					<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'dir')" avatar v-for="item in dir.directories" :key="item._id" @click="openDir(item._id)">
+						<v-list-tile-avatar>
+							<v-icon>folder</v-icon>
+						</v-list-tile-avatar>
+						<v-list-tile-content>
+							<v-list-tile-title v-text="item.name"></v-list-tile-title>
+						</v-list-tile-content>
+					</v-list-tile>
+					<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'file')" avatar v-for="item in dir.files" :key="item._id" @click="openDir(item._id)">
+						<v-list-tile-avatar>
+							<v-icon>file</v-icon>
+						</v-list-tile-avatar>
+						<v-list-tile-content>
+							<v-list-tile-title v-text="item.name"></v-list-tile-title>
+						</v-list-tile-content>
+					</v-list-tile>
+				</v-list>
+			</v-flex>
+			<v-menu offset-y v-model="showContextMenu" absolute :position-x="contextX" :position-y="contextY">
+				<v-list>
+					<v-list-tile @click="newDirClicked()">
+						<v-list-tile-avatar>
+							<v-icon>folder</v-icon>
+						</v-list-tile-avatar>
+						<v-list-tile-content>
+							New Folder
+						</v-list-tile-content>
+					</v-list-tile>
+					<v-list-tile @click="deleteClicked()" v-if="clickedItem.item">
+						<v-list-tile-avatar>
+							<v-icon>delete</v-icon>
+						</v-list-tile-avatar>
+						<v-list-tile-content>
+							Delete
+						</v-list-tile-content>
+					</v-list-tile>
+				</v-list>
+			</v-menu>
+			<app-text-field-dialog v-model="textEditField.show" :title="textEditField.title" :label="textEditField.label" @submit="textEditField.submit"></app-text-field-dialog>
+		</v-layout>
+	</v-container>
 </template>
 
 <script>
