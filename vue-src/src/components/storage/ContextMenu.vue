@@ -9,6 +9,14 @@
 					New Folder
 				</v-list-tile-content>
 			</v-list-tile>
+			<v-list-tile @click="renameClicked()" v-if="item">
+				<v-list-tile-avatar>
+					<v-icon>mode_edit</v-icon>
+				</v-list-tile-avatar>
+				<v-list-tile-content>
+					Rename
+				</v-list-tile-content>
+			</v-list-tile>
 			<v-list-tile @click="deleteItem()" v-if="item">
 				<v-list-tile-avatar>
 					<v-icon>delete</v-icon>
@@ -48,6 +56,9 @@
 		methods:{
 			newDir(){
 				this.$emit("new-dir");
+			},
+			renameClicked(){
+				this.$emit("rename");
 			},
 			deleteItem(){
 				this.$emit("delete");

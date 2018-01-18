@@ -4,7 +4,7 @@
 		<v-layout row wrap >
 			<v-flex xs12>
 				<v-list v-if="dir">
-					<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'dir')" avatar v-for="item in dir.directories" :key="item._id" @click="openDir(item._id)">
+					<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'dir', index)" avatar v-for="(item, index) in dir.directories" :key="item._id" @click="openDir(item._id)">
 						<v-list-tile-avatar>
 							<v-icon>folder</v-icon>
 						</v-list-tile-avatar>
@@ -12,7 +12,7 @@
 							<v-list-tile-title v-text="item.name"></v-list-tile-title>
 						</v-list-tile-content>
 					</v-list-tile>
-					<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'file')" avatar v-for="item in dir.files" :key="item._id" @click="openDir(item._id)">
+					<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'file', index)" avatar v-for="(item, index) in dir.files" :key="item._id" @click="openDir(item._id)">
 						<v-list-tile-avatar>
 							<v-icon>file</v-icon>
 						</v-list-tile-avatar>
@@ -22,7 +22,7 @@
 					</v-list-tile>
 				</v-list>
 			</v-flex>
-			<app-context-menu :x="contextX" :y="contextY" v-model="showContextMenu" :item="clickedItem.item" :type="clickedItem.type" @delete="deleteClicked" @new-dir="newDirClicked"></app-context-menu>
+			<app-context-menu :x="contextX" :y="contextY" v-model="showContextMenu" :item="clickedItem.item" :type="clickedItem.type" @delete="deleteClicked" @rename="renameClicked" @new-dir="newDirClicked"></app-context-menu>
 			<app-text-field-dialog v-model="textEditField.show" :title="textEditField.title" :label="textEditField.label" @submit="textEditField.submit"></app-text-field-dialog>
 		</v-layout>
 	</v-container>
@@ -51,7 +51,8 @@
 				},
 				clickedItem: {
 					item: null,
-					type: null
+					type: null,
+					index: 0
 				}
 			}
 		},
@@ -69,9 +70,10 @@
 			openDir(id){
 				this.$router.push({path:'/storage/' + id});
 			},
-			showMenu(e, item, type){
+			showMenu(e, item, type, index){
 				this.clickedItem.item = item;
 				this.clickedItem.type = type;
+				this.clickedItem.index = index;
 				this.showContextMenu = false;
 				this.contextX = e.x;
 				this.contextY = e.y;
@@ -88,11 +90,30 @@
 						console.log(response);
 						this.dir.directories.push(response.body);
 					}catch(err){
-						console.log(err.body.message || err.message);
+						showError(err);
 					}
 				}
 				this.textEditField.title = "New Folder";
 				this.textEditField.label = "Folder name";
+				this.textEditField.show = true;
+			},
+			renameClicked(){
+				this.textEditField.submit = async (e) => {
+					let oldName = this.clickedItem.item.name;
+					this.clickedItem.item.name = e;
+					try{
+						if (this.clickedItem.type == 'dir'){
+							this.dir.directories[this.clickedItem.index] = await this.dirResource.update({id:this.clickedItem.item._id}, this.clickedItem.item);
+						}else {
+							this.dir.files[this.clickedItem.index] = await this.fileResource.update({id:this.clickedItem.item._id}, this.clickedItem.item);
+						}
+					}catch(err){
+						this.clickedItem.item.name = oldName;
+						showError(err);
+					}
+				}
+				this.textEditField.title = `Rename "${this.clickedItem.item.name}"`;
+				this.textEditField.label = "New name";
 				this.textEditField.show = true;
 			},
 			async deleteClicked(){
@@ -104,8 +125,11 @@
 						this.dir.directories.splice(this.dir.directories.indexOf(this.clickedItem.item), 1);
 					}
 				}catch(err){
-					console.log(err.body.message || err.message);
+					showError(err);
 				}
+			},
+			showError(err){
+				console.log(err.body.message || err.message);
 			}
 		},
 		async created(){
