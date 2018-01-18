@@ -3,6 +3,7 @@ const idValidator = require("mongoose-id-validator");
 const fs = require("fs");
 const path = require("path");
 const config = require("../config");
+const ValidatorError = mongoose.Error.ValidatorError;
 
 const fileSchema = new mongoose.Schema({
 	name: {
@@ -59,7 +60,11 @@ fileSchema.pre("validate", async function(next){
 		await this.populate({path:"owner"}).execPopulate();
 	}
 	if (!await this.parent.userCanEdit(this.owner)){
-		throw new Error("Access denied");
+		const props = {
+			type: 'Access Denied',
+			message: "Access denied",
+		}
+		return next (new ValidatorError(props));
 	}
 
 	next();

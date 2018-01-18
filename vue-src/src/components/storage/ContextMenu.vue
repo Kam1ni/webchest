@@ -17,6 +17,14 @@
 					Rename
 				</v-list-tile-content>
 			</v-list-tile>
+			<v-list-tile @click="moveClicked()" v-if="item">
+				<v-list-tile-avatar>
+					<v-icon>reply</v-icon>
+				</v-list-tile-avatar>
+				<v-list-tile-content>
+					Move
+				</v-list-tile-content>
+			</v-list-tile>
 			<v-list-tile @click="deleteItem()" v-if="item">
 				<v-list-tile-avatar>
 					<v-icon>delete</v-icon>
@@ -59,6 +67,9 @@
 			},
 			renameClicked(){
 				this.$emit("rename");
+			},
+			moveClicked(){
+				this.$emit("move");
 			},
 			deleteItem(){
 				this.$emit("delete");

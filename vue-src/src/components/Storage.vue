@@ -22,8 +22,9 @@
 					</v-list-tile>
 				</v-list>
 			</v-flex>
-			<app-context-menu :x="contextX" :y="contextY" v-model="showContextMenu" :item="clickedItem.item" :type="clickedItem.type" @delete="deleteClicked" @rename="renameClicked" @new-dir="newDirClicked"></app-context-menu>
+			<app-context-menu :x="contextX" :y="contextY" v-model="showContextMenu" :item="clickedItem.item" :type="clickedItem.type" @delete="deleteClicked" @rename="renameClicked" @new-dir="newDirClicked" @move="moveClicked"></app-context-menu>
 			<app-text-field-dialog v-model="textEditField.show" :title="textEditField.title" :label="textEditField.label" @submit="textEditField.submit"></app-text-field-dialog>
+			<app-nav-dialog v-model="navigationMenu.show" @submit="navigationMenu.submit" :title="navigationMenu.title" :submitButton="navigationMenu.submitButton"></app-nav-dialog>
 		</v-layout>
 	</v-container>
 </template>
@@ -32,6 +33,7 @@
 	import TextFieldDialogVue from './common/TextFieldDialog.vue';
 	import ContextMenu from './storage/ContextMenu.vue'
 	import Nav from './storage/Nav.vue';
+	import NavDialog from './common/NavigationDialog.vue';
 
 	export default {
 		data(){
@@ -53,6 +55,14 @@
 					item: null,
 					type: null,
 					index: 0
+				},
+				navigationMenu:{
+					show:false,
+					submit(){
+
+					},
+					title: "Move item",
+					submitButton: "Move here"
 				}
 			}
 		},
@@ -90,7 +100,7 @@
 						console.log(response);
 						this.dir.directories.push(response.body);
 					}catch(err){
-						showError(err);
+						this.showError(err);
 					}
 				}
 				this.textEditField.title = "New Folder";
@@ -109,12 +119,37 @@
 						}
 					}catch(err){
 						this.clickedItem.item.name = oldName;
-						showError(err);
+						this.showError(err);
 					}
 				}
 				this.textEditField.title = `Rename "${this.clickedItem.item.name}"`;
 				this.textEditField.label = "New name";
 				this.textEditField.show = true;
+			},
+			moveClicked(){
+				this.navigationMenu.submit = async (e) =>{
+					if (e._id != this.dir._id){
+						if (e._id == undefined){
+							e._id = null;
+						}
+						let oldParent = this.clickedItem.item.parent;
+						this.clickedItem.item.parent = e._id;
+						try{
+							if (this.clickedItem.type == 'dir'){
+								await this.dirResource.update({id:this.clickedItem.item._id}, this.clickedItem.item);
+								this.dir.directories.splice(this.clickedItem.index,1);
+							}else {
+								await this.fileResource.update({id:this.clickedItem.item._id}, this.clickedItem.item);
+								this.dir.files.splice(this.clickedItem.index,1);
+							}
+						}catch(err){
+							this.clickedItem.item.parent = oldParent;
+							this.showError(err);
+						}
+					}
+				}
+				this.navigationMenu.title = `Move ${this.clickedItem.item.name}`;
+				this.navigationMenu.show = true;
 			},
 			async deleteClicked(){
 				try{
@@ -125,7 +160,7 @@
 						this.dir.directories.splice(this.dir.directories.indexOf(this.clickedItem.item), 1);
 					}
 				}catch(err){
-					showError(err);
+					this.showError(err);
 				}
 			},
 			showError(err){
@@ -146,7 +181,8 @@
 		components:{
 			'app-text-field-dialog':TextFieldDialogVue,
 			'app-nav':Nav,
-			'app-context-menu': ContextMenu
+			'app-context-menu': ContextMenu,
+			'app-nav-dialog': NavDialog
 		}
 	}
 </script>

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const idValidator = require("mongoose-id-validator");
 const File = require("./file");
+const ValidatorError = mongoose.Error.ValidatorError;
 
 const directorySchema = new mongoose.Schema({
 	name: {
@@ -53,11 +54,21 @@ directorySchema.pre("validate", async function(next){
 		await this.populate("owner").execPopulate();
 	}
 	if (this.parent && !await this.parent.userCanEdit(this.owner)){
-		throw new Error("Access denied");
+		const props = {
+			type: 'Access Denied',
+			message: "Access denied",
+		}
+		return next (new ValidatorError(props));
 	}
 
 	if (this.equals(this.parent)){
-		throw new Error("Parrent can not be the same object");
+		const props = {
+			type: 'invalid parent',
+			message: "Parent can not be the same object",
+			path: 'parent',
+			value: this.parent
+		}
+		return next (new ValidatorError(props));
 	}
 
 	let parent = this.parent;
@@ -65,7 +76,13 @@ directorySchema.pre("validate", async function(next){
 		await parent.populate({path: 'parent'}).execPopulate();
 		parent = parent.parent;
 		if (this.equals(parent)){
-			throw new Error("Infinite directory loop");
+			const props = {
+			type: 'invalid parent',
+			message: "Infinite directory loop",
+			path: 'parent',
+			value: this.parent
+		}
+		return next (new ValidatorError(props));
 		}
 	}
 
