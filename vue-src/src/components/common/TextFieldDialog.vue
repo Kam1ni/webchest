@@ -1,7 +1,7 @@
 <template>
 	<v-dialog v-model="value" persistent max-width="500px">
 		<v-card>
-			<v-form v-model="valid" @submit="submit()">
+			<v-form v-model="valid" @submit.prevent="submit()">
 				<v-card-title>
 					<span class="headline">{{title}}</span>
 				</v-card-title>

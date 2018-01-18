@@ -34,16 +34,38 @@
 				</v-list-tile-content>
 			</v-list-tile>
 		</v-list>
+		<app-text-field-dialog v-model="textEditField.show" :title="textEditField.title" :label="textEditField.label" @submit="textEditField.submit"></app-text-field-dialog>
+		<app-nav-dialog v-model="navigationMenu.show" @submit="navigationMenu.submit" :title="navigationMenu.title" :submitButton="navigationMenu.submitButton"></app-nav-dialog>
 	</v-menu>
 </template>
 
 <script>
+	import TextFieldDialogVue from '../common/TextFieldDialog.vue';
+	import NavDialog from '../common/NavigationDialog.vue';
+	import Dir from '../../classes/dir';
+	import File from '../../classes/file';
+
 	export default {
 		data(){
 			return {
 				show: false,
 				left: false,
-				bottom: false
+				bottom: false,
+				navigationMenu:{
+					show:false,
+					submit(){
+
+					},
+					title: "Move item",
+					submitButton: "Move here"
+				},
+				textEditField:{
+					show: false,
+					submit(){
+					},
+					title: "",
+					label: ""
+				},
 			}
 		},
 		watch: {
@@ -60,20 +82,59 @@
 				this.bottom = this.y > window.innerHeight / 2;
 			}
 		},
-		props:['x','y','item','value','type'],
+		props:['x','y','item','value', "dir"],
 		methods:{
 			newDir(){
-				this.$emit("new-dir");
+				this.textEditField.submit = async (e) => {
+					let dir = new Dir({name :e, parent: this.id});
+					try{
+						await dir.save();
+						this.dir.directories.push(dir);
+						console.log(dir);
+					}catch(err){
+						this.$emit("error", err);
+					}
+				}
+				this.textEditField.title = "New Folder";
+				this.textEditField.label = "Folder name";
+				this.textEditField.show = true;
 			},
 			renameClicked(){
-				this.$emit("rename");
+				this.textEditField.submit = async (e) => {
+					try{
+						await this.item.rename(e);
+					}catch(err){
+						this.$emit("error", err);
+					}
+				}
+				this.textEditField.title = `Rename "${this.item.name}"`;
+				this.textEditField.label = "New name";
+				this.textEditField.show = true;
 			},
 			moveClicked(){
-				this.$emit("move");
+				this.navigationMenu.submit = async (e) =>{
+					try{
+						await this.item.move(e);
+						this.dir.removeItem(this.item);
+					}catch(err){
+						this.$emit("error",err);
+					}
+				}
+				this.navigationMenu.title = `Move ${this.item.name}`;
+				this.navigationMenu.show = true;
 			},
-			deleteItem(){
-				this.$emit("delete");
+			async deleteItem(){
+				try{
+					console.log(this.item);
+					await this.item.delete();
+					this.dir.removeItem(this.item);
+				}catch(err){
+					this.$emit("error",err)
+				}
 			}
+		},components:{
+			'app-text-field-dialog':TextFieldDialogVue,
+			'app-nav-dialog': NavDialog
 		}
 	}
 </script>
