@@ -1,5 +1,5 @@
 <template>
-	<v-app>
+	<v-app style="overflow: hidden">
 		<template v-if="loggedIn">
 			<v-toolbar app color="teal darken-4" dark>
 				<v-toolbar-title>MEVN-Drive</v-toolbar-title>
