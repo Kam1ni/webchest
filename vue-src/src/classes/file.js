@@ -19,6 +19,7 @@ export default class File {
 		this.name = data.name;
 		this.parent = data.parent;
 		this.owner = data.owner;
+		this.mimetype = data.mimetype;
 	}
 
 	async save(){
@@ -29,6 +30,15 @@ export default class File {
 
 	async delete(){
 		await this.constructor.deleteFile(this);
+	}
+
+	async download(){
+		let response = await Vue.http.get("file/download/" + this._id, {responseType: 'arraybuffer'});
+		let blob = new Blob([response.data], {type:response.headers.get('content-type')});
+		let link = document.createElement('a');
+		link.href = window.URL.createObjectURL(blob);
+		link.download = this.name;
+		link.click();
 	}
 
 	async rename(newName){

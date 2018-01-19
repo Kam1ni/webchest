@@ -12,13 +12,16 @@
 							<v-list-tile-title v-text="item.name"></v-list-tile-title>
 						</v-list-tile-content>
 					</v-list-tile>
-					<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'file', index)" avatar v-for="(item, index) in dir.files" :key="item._id" @click="openDir(item._id)">
+					<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'file', index)" avatar v-for="(item, index) in dir.files" :key="item._id" @click.stop>
 						<v-list-tile-avatar>
 							<v-icon>insert_drive_file</v-icon>
 						</v-list-tile-avatar>
 						<v-list-tile-content>
 							<v-list-tile-title v-text="item.name"></v-list-tile-title>
 						</v-list-tile-content>
+						<v-list-tile-action @click.stop="downloadItem(item)">
+							<v-icon>file_download</v-icon>
+						</v-list-tile-action>
 					</v-list-tile>
 				</v-list>
 			</v-flex>
@@ -103,6 +106,15 @@
 					}catch(err){
 						this.showError(err);
 					}
+				}
+			},
+			async downloadItem(item){
+				console.log("Downloading");
+				try{
+					await item.download();
+				}catch(err){
+					console.log(err);
+					this.showError(item);
 				}
 			}
 		},

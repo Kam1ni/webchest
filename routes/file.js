@@ -37,7 +37,8 @@ router.get("/download/:fileId", async function(req,res,next){
 			err.status = 401;
 			throw err;
 		}
-		req.download(file.fileLocation, file.name, function(err){
+		console.log("sending file");
+		res.download(file.fileLocation, file.name, function(err){
 			if (err){
 				next(err);
 			}
