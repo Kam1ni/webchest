@@ -99,4 +99,45 @@ export default class Dir{
 	static async deleteDirectroy(dir){
 		return await resource.delete({id:dir._id});
 	}
+
+}
+
+Dir.Uploader = class {
+	constructor(dirItem, parent){
+		this.dirItem = dirItem;
+		this.parent = parent._id;
+		this.progress = 0;
+	}
+
+	async upload(){
+		let dir = new Dir({name: this.dirItem.name, parent: this.parent || null});
+		console.log("Saving dir")
+		await dir.save();
+		console.log("dir saved")
+		let promise = new Promise(async (resolve, reject)=>{
+			let dirReader = this.dirItem.createReader();
+			dirReader.readEntries(async (results) => {
+				try{
+					console.log(results);
+					for (let item of results){
+						if (item.isFile){
+							console.log("uploading file");
+							let uploader = new File.Uploader(item, dir);;
+							await uploader.upload();
+						}else{
+							console.log("uploading dir");
+							let uploader = new Dir.Uploader(item, dir);
+							await uploader.upload();
+						}
+					}
+					resolve();
+				}catch(err){
+					reject(err);
+				}
+			});
+		});
+		console.log("Waiting for promise");
+		await promise;
+		return dir;
+	}
 }

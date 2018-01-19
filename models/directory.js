@@ -21,7 +21,8 @@ const directorySchema = new mongoose.Schema({
 	},
 	parent: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: "Directory"
+		ref: "Directory",
+		default: null
 	}
 });
 

@@ -23,8 +23,8 @@ const fileSchema = new mongoose.Schema({
 	},
 	parent: {
 		type: mongoose.Schema.Types.ObjectId,
-		required: true,
-		ref: "Directory"
+		ref: "Directory",
+		default: null
 	},
 	size: {
 		type: Number,
@@ -37,7 +37,7 @@ const fileSchema = new mongoose.Schema({
 });
 
 fileSchema.virtual("fileLocation").get(function(){
-	return Path.resolve(config.server.fileDir, this._id);
+	return path.resolve(config.server.fileDir, this._id + "");
 })
 
 fileSchema.pre("validate", async function(next){
@@ -50,7 +50,15 @@ fileSchema.pre("validate", async function(next){
 			}
 		})
 	}.bind(this))
-	let stats = await promise;
+	try{
+		var stats = await promise;
+	}catch(err){
+		const props = {
+			type: 'Saving error',
+			message: "Error occured when saving file.",
+		}
+		return next (new ValidatorError(props));
+	}
 	this.size = stats.size;
 
 	if (!this.populated("parent")){
@@ -59,7 +67,7 @@ fileSchema.pre("validate", async function(next){
 	if (!this.populated("owner")){
 		await this.populate({path:"owner"}).execPopulate();
 	}
-	if (!await this.parent.userCanEdit(this.owner)){
+	if (this.parent && !await this.parent.userCanEdit(this.owner)){
 		const props = {
 			type: 'Access Denied',
 			message: "Access denied",
@@ -77,7 +85,7 @@ fileSchema.methods.saveFile = async function(file){
 	await file.mv(this.fileLocation);
 	this.name = file.name;
 	this.mimetype = file.mimetype;
-	await file.save();
+	await this.save();
 }
 
 fileSchema.pre("remove", async function(next){
@@ -89,20 +97,20 @@ fileSchema.pre("remove", async function(next){
 				resolve();
 			}
 		});
-	});
+	}.bind(this));
 	await promise;
 	next();
 });
 
 fileSchema.methods.userCanView = async function(user){
-	if (this.owner.equals(user)){
+	if (this.owner.equals(user._id)){
 		return true;
 	}
 	return false;
 }
 
 fileSchema.methods.userCanEdit = async function(user){
-	if (this.owner.equals(user)){
+	if (this.owner.equals(user._id)){
 		return true;
 	}
 	return false;

@@ -1,5 +1,5 @@
 <template>
-	<v-container fluid style="padding: 0px;" @contextmenu.prevent="showMenu($event)">
+	<v-container fluid style="padding: 0px;" @drop.prevent="onFileDrop" @dragover.prevent @contextmenu.prevent="showMenu($event)">
 		<app-nav :current="dir"/>
 		<v-layout row wrap >
 			<v-flex xs12>
@@ -14,7 +14,7 @@
 					</v-list-tile>
 					<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'file', index)" avatar v-for="(item, index) in dir.files" :key="item._id" @click="openDir(item._id)">
 						<v-list-tile-avatar>
-							<v-icon>file</v-icon>
+							<v-icon>insert_drive_file</v-icon>
 						</v-list-tile-avatar>
 						<v-list-tile-content>
 							<v-list-tile-title v-text="item.name"></v-list-tile-title>
@@ -49,7 +49,6 @@
 					type: null,
 					index: 0
 				},
-
 			}
 		},
 		watch:{
@@ -86,6 +85,25 @@
 					console.log(err.message);
 				}
 				console.log(err.stack);
+			},
+			async onFileDrop(event){
+				let dt = event.dataTransfer;
+				for (let file of dt.items){
+					try{
+						let entry = file.webkitGetAsEntry();
+						if (entry.isFile){
+							let uploader = new File.Uploader(entry, this.dir);
+							let file = await uploader.upload();
+							this.dir.files.push(file);
+						}else{
+							let uploader = new Dir.Uploader(entry, this.dir);
+							let directory = await uploader.upload();
+							this.dir.directories.push(directory);
+						}
+					}catch(err){
+						this.showError(err);
+					}
+				}
 			}
 		},
 		async created(){

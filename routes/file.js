@@ -13,7 +13,7 @@ router.get("/:fileId", async function(req,res,next){
 			err.status = 404;
 			throw err;
 		}
-		if (!await file.userCanView(this.user)){
+		if (!await file.userCanView(req.user)){
 			let err = new Error("Permission denied!");
 			err.status = 401;
 			throw err;
@@ -32,7 +32,7 @@ router.get("/download/:fileId", async function(req,res,next){
 			err.status = 404;
 			throw err;
 		}
-		if (!await file.userCanView(this.user)){
+		if (!await file.userCanView(req.user)){
 			let err = new Error("Permission denied!");
 			err.status = 401;
 			throw err;
@@ -56,9 +56,8 @@ router.post("/", async function(req,res,next){
 		}
 		let file = new File(req.body);
 		file.owner = req.user;
-		file.saveFile(req.files.file);
-		await file.save();
-		resolve.json(file);
+		await file.saveFile(req.files.file);
+		res.json(file);
 	}catch(err){
 		next(err);
 	}
@@ -72,7 +71,7 @@ router.put("/:fileId", async function(req,res,next){
 			err.status = 404;
 			throw err;
 		}
-		if (!await file.userCanEdit(this.user)){
+		if (!await file.userCanEdit(req.user)){
 			let err = new Error("Permission denied!");
 			err.status = 401;
 			throw err;
@@ -95,7 +94,7 @@ router.delete("/:fileId", async function(req,res,next){
 			err.status = 404;
 			throw err;
 		}
-		if (!await file.userCanEdit(this.user)){
+		if (!await file.userCanEdit(req.user)){
 			let err = new Error("Permission denied!");
 			err.status = 401;
 			throw err;

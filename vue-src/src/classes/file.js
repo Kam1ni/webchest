@@ -22,13 +22,13 @@ export default class File {
 	}
 
 	async save(){
-		let data = await this.saveFile(this);
+		let data = await this.constructor.saveFile(this);
 		console.log(data);
 		this.setData(data);
 	}
 
 	async delete(){
-		await this.deleteFile(this);
+		await this.constructor.deleteFile(this);
 	}
 
 	async rename(newName){
@@ -71,5 +71,32 @@ export default class File {
 
 	static async deleteFile(file){
 		return await resource.delete({id:file._id});
+	}
+}
+
+File.Uploader = class {
+	constructor(fileItem, parent){
+		this.file = fileItem;
+		this.parent = parent._id;
+	}
+
+	async getFile(){
+		return await new Promise((resolve, reject) => { 
+			this.file.file(function(file){
+				resolve(file);
+			}, reject)
+		});
+	}
+
+	async upload(){
+		let data = new FormData();
+		data.set('name', this.file.name);
+		if (this.parent){
+			data.set('parent', this.parent);
+		}
+		data.set('file', await this.getFile());
+		console.log(data.get("file"));
+		let file = new File((await resource.save({}, data)).body);
+		return file;
 	}
 }
