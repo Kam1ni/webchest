@@ -13,9 +13,7 @@
 			<v-card-actions>
 				<v-btn flat @click="login()">Login</v-btn>
 			</v-card-actions>
-			<v-snackbar v-model="showError" :right="true" :top="true" :timeout="4000">
-				{{errorMessage}}
-			</v-snackbar>
+			<app-error v-if="error">{{error}}</app-error>
 		</v-form>
 	</v-card>
 </template>
@@ -26,26 +24,20 @@
 			return {
 				username: "",
 				password: "",
-				errorMessage: "Error message",
-				showError: false				
+				error: null
 			}
 		},
 		methods:{
 			async login(){
 				try{
-					/*console.log("Logging in");
-					let response = await this.$http.post("auth/login", {username: this.username, password: this.password});
-					console.log(response.body.token);
-					this.$emit("login", response.body.token);*/
 					await this.$AuthService.login(this.username, this.password);
 				}catch(err){
 					console.log(err)
 					if (err.body){
-						this.errorMessage = err.body.message;
+						this.errors = err.body.message;
 					}else{
-						this.errorMessage = err.message;
+						this.errors = err.message;
 					}
-					this.showError = true;
 				}
 			}
 		}

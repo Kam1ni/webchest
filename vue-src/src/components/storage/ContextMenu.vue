@@ -65,7 +65,7 @@
 					},
 					title: "",
 					label: ""
-				},
+				}
 			}
 		},
 		watch: {

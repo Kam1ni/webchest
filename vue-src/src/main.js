@@ -6,6 +6,7 @@ import VueResource from 'vue-resource';
 import {init as dirInit} from './classes/dir';
 import {init as fileInit} from './classes/file';
 import AuthService from './services/auth-service';
+import AppError from './components/common/Error.vue';
 
 Vue.use(VueResource);
 Vue.http.options.root = "http://localhost:3000/";
@@ -30,6 +31,8 @@ Vue.use(Vuetify, {
 		error: "#b71c1c"
 	}
 });
+
+Vue.component('app-error', AppError);
 
 new Vue({
 	el: '#app',
