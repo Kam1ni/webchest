@@ -69,6 +69,15 @@ export default class Dir{
 		}
 	}
 
+	async download(){
+		let response = await Vue.http.get("dir/download/" + this._id, {responseType: 'arraybuffer'});
+		let blob = new Blob([response.data], {type:response.headers.get('content-type')});
+		let link = document.createElement('a');
+		link.href = window.URL.createObjectURL(blob);
+		link.download = this.name;
+		link.click();
+	}
+
 	async move(newParent){
 		let oldParent = this.parent;
 		this.parent = newParent._id;

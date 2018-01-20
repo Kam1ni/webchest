@@ -1,6 +1,7 @@
 const express = require("express");
 const fileUpload = require("express-fileupload");
 const File = require("../models/file");
+const fs = require("fs");
 
 const router = express.Router();
 router.use(fileUpload());
@@ -37,7 +38,6 @@ router.get("/download/:fileId", async function(req,res,next){
 			err.status = 401;
 			throw err;
 		}
-		console.log("sending file");
 		res.download(file.fileLocation, file.name, function(err){
 			if (err){
 				next(err);
@@ -51,9 +51,22 @@ router.get("/download/:fileId", async function(req,res,next){
 router.post("/", async function(req,res,next){
 	try{
 		if (!req.files || !req.files.file){
-			let err = new Error("No files where provided");
-			err.status = 400;
-			throw err;
+			req.files = {
+				file: {}
+			};
+			req.files.file.mv = function(fileLocation){
+				let promise = new Promise((resolve, reject)=>{
+					fs.writeFile(fileLocation, req.files.file.data, (err)=>{
+						if (!err){
+							resolve();
+						}else{
+							reject(err);
+						}
+					})
+				});
+				return promise;
+			}
+			req.body.mimetype = "text/plain";
 		}
 		let file = new File(req.body);
 		file.owner = req.user;

@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 const idValidator = require("mongoose-id-validator");
+const archiver = require("archiver");
+const fs = require("fs");
+const path = require("path");
+
 const File = require("./file");
+const config = require("../config");
 const ValidatorError = mongoose.Error.ValidatorError;
 
 const directorySchema = new mongoose.Schema({
@@ -86,9 +91,51 @@ directorySchema.pre("validate", async function(next){
 		return next (new ValidatorError(props));
 		}
 	}
-
 	next();
 });
+
+directorySchema.methods.createZip = async function(){
+	let promise = new Promise(async (resolve, reject)=>{
+		let fileName = path.join(config.server.fileDir, this._id + "-" + new Date().getTime() + ".zip");
+		let output = fs.createWriteStream(fileName);
+		let archive = archiver('zip', {
+			zlib:{level: 0}
+		});
+		archive.on('error', (err)=>{
+			reject(err);
+		});
+		output.on('close', ()=>{
+			resolve({fileLocation: fileName, delete: function(){
+				fs.unlink(fileName, (err)=>{if(err) console.error(err.message)});
+			}});
+		});
+		archive.on('warning', (err)=>{
+			if (err.code == 'ENOENT'){
+				console.log(err.message);
+			}else{
+				reject(err);
+			}
+		});
+		archive.pipe(output);
+		let content = await this.getContent();
+		function handleFiles(files, parentDir){
+			for (let file of files){
+				archive.append(fs.createReadStream(file.fileLocation), {name: parentDir + "/" + file.name});
+			}
+		}
+		async function handleDirectories(directories, parentDir){
+			for (let dir of directories){
+				let thisDirContent = await dir.getContent();
+				handleFiles(thisDirContent.files, parentDir + "/" + dir.name);
+				await handleDirectories(thisDirContent.directories, parentDir + "/" + dir.name);
+			}
+		}
+		handleFiles(content.files, this.name);
+		await handleDirectories(content.directories, this.name);
+		archive.finalize();
+	});
+	return await promise;
+}
 
 directorySchema.pre("remove", async function(next){
 	let content = await this.getContent();

@@ -37,6 +37,32 @@ router.get("/:directoryId", async function(req,res,next){
 	}
 });
 
+router.get("/download/:directoryId", async function(req,res,next){
+	try{
+		let dir = await Directory.findById(req.params.directoryId);
+		if (!dir){
+			let err = new Error("Directory does not exist!");
+			err.status = 404;
+			throw err;
+		}
+		if (!await dir.userCanView(req.user)){
+			let err = new Error("Permission denied!");
+			err.status = 401;
+			throw err;
+		}
+		let result = await dir.createZip();
+		res.download(result.fileLocation, dir.name, function(err){
+			result.delete();
+			if (err){
+				next(err);
+			}
+		});
+	}catch(err){
+		next(err);
+	}
+});
+
+
 router.post("/", async function(req,res,next){
 	try{
 		let dir = new Directory(req.body);

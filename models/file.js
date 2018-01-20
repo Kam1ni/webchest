@@ -83,8 +83,8 @@ fileSchema.methods.saveFile = async function(file){
 		this._id = mongoose.Types.ObjectId();
 	}
 	await file.mv(this.fileLocation);
-	this.name = file.name;
-	this.mimetype = file.mimetype;
+	this.name = file.name || this.name;
+	this.mimetype = file.mimetype || this.mimetype;
 	await this.save();
 }
 
