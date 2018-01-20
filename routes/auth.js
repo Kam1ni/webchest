@@ -30,11 +30,36 @@ router.post("/login", async function(req, res, next){
 	}
 });
 
+router.patch("/password", mAuth.authenticate, async function(req,res,next){
+	try{
+		let valid = await req.user.verifyPassword(req.body.oldPassword);
+		if (!valid){
+			throw new Error("Old password is wrong");
+		}
+		req.user.password = req.body.newPassword;
+		await req.user.save();
+		res.json({message:"Password changed"});
+	}catch(err){
+		err.status = 400;
+		next(err);
+	}
+});
+
 router.delete("/logout", mAuth.authenticate, async function(req,res,next){
 	try{
 		req.user.tokens.splice(req.user.tokens.indexOf(req.headers.authorization), 1);
 		await req.user.save();
 		res.json({});
+	}catch(err){
+		next(err);
+	}
+});
+
+router.delete("/logout/:token", mAuth.authenticate, async function(req,res,next){
+	try{
+		req.user.tokens.splice(req.user.tokens.indexOf(req.params.token), 1);
+		await req.user.save();
+		res.json(req.user);
 	}catch(err){
 		next(err);
 	}

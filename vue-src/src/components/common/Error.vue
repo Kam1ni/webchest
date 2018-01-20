@@ -1,6 +1,6 @@
 <template>
-	<v-snackbar v-model="show" :timeout="6000" :top="true" :right="true" color="red">
-		<slot></slot>
+	<v-snackbar v-model="show" :timeout="6000" :top="true" :right="true" color="error">
+		{{message}}
 	</v-snackbar>
 </template>
 
@@ -8,7 +8,8 @@
 	export default {
 		data(){
 			return{
-				show: true
+				show: false,
+				message: null
 			};
 		},
 		watch: {
@@ -17,6 +18,14 @@
 					this.$emit("close");
 				}
 			},
-		}
+			value(newVal, oldVal){
+				if (newVal != null){
+					this.message = newVal;
+					this.show = this.value;
+					this.$emit("input", null);
+				}
+			}
+		},
+		props: ["value"]
 	}
 </script>

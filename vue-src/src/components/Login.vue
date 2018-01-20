@@ -1,6 +1,6 @@
 <template>
 	<v-card class="elevation-24">
-		<v-form>
+		<v-form @submit="login()">
 			<v-card-title primary-title>
 				<div class="headline">
 					Login
@@ -13,7 +13,7 @@
 			<v-card-actions>
 				<v-btn flat @click="login()">Login</v-btn>
 			</v-card-actions>
-			<app-error v-if="error">{{error}}</app-error>
+			<app-error v-model="error"></app-error>
 		</v-form>
 	</v-card>
 </template>
@@ -34,12 +34,12 @@
 				}catch(err){
 					console.log(err)
 					if (err.body){
-						this.errors = err.body.message;
+						this.error = err.body.message;
 					}else{
-						this.errors = err.message;
+						this.error = err.message;
 					}
 				}
 			}
-		}
+		},
 	}
 </script>

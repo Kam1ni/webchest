@@ -29,7 +29,7 @@
 				</v-list>
 			</v-flex>
 			<app-context-menu :x="contextMenu.x" :y="contextMenu.y" v-model="contextMenu.show" :item="clickedItem.item" :type="clickedItem.type" @error="showError($event)" :dir="dir"></app-context-menu>
-			<app-error v-if="error">{{error}}</app-error>
+			<app-error v-model="error"></app-error>
 		</v-layout>
 	</v-container>
 </template>
@@ -56,7 +56,7 @@
 					type: null,
 					index: 0
 				},
-				error: null
+				error: ""
 			}
 		},
 		watch:{

@@ -7,6 +7,7 @@ class AuthService extends EventEmitter{
 		this.fetchProfile().catch((err)=>{
 			console.error("Failed to fetch profile");
 		});
+		this.user = {};
 	}
 
 	async login(username, password){
@@ -19,6 +20,11 @@ class AuthService extends EventEmitter{
 
 	isLoggedIn(){
 		return localStorage.getItem("token") != null;
+	}
+
+	async changePassword(oldPassword, newPassword){
+		let response = await Http.patch("auth/password", {oldPassword, newPassword});
+		return response.body.message;
 	}
 
 	async fetchProfile(){
