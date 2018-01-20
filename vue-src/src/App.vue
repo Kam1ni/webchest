@@ -12,7 +12,7 @@
 		</template>
 		<v-layout row justify-center wrap align-center class="teal-background" fill-height v-if="!loggedIn">
 			<v-flex xs10 sm8 md6>
-				<app-login @login="onLogin"></app-login>
+				<app-login></app-login>
 			</v-flex>
 		</v-layout>
 	</v-app>
@@ -32,19 +32,22 @@ export default {
 		'app-login': Login
 	},
 	methods: {
-		onLogin(event){
-			localStorage.setItem("token", event);
-			this.loggedIn = true;
-		},
-		logout(){
-			this.loggedIn = false;
-			localStorage.clear();
+		async logout(){
+			try{
+				await this.$AuthService.logout();
+			}catch(err){
+				
+			}
 		}
 	},
 	created(){
-		if (localStorage.getItem("token")){
+		this.loggedIn = this.$AuthService.isLoggedIn();
+		this.$AuthService.on("login", (user)=>{
 			this.loggedIn = true;
-		}
+		});
+		this.$AuthService.on("logout", ()=>{
+			this.loggedIn = false;
+		});
 	}
 }
 </script>

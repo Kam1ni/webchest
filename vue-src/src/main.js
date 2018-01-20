@@ -5,6 +5,7 @@ import Vuetify from 'vuetify';
 import VueResource from 'vue-resource';
 import {init as dirInit} from './classes/dir';
 import {init as fileInit} from './classes/file';
+import AuthService from './services/auth-service';
 
 Vue.use(VueResource);
 Vue.http.options.root = "http://localhost:3000/";
@@ -14,6 +15,8 @@ Vue.http.interceptors.push(function(req,next){
 	}
 	next();
 });
+
+Vue.use(AuthService);
 
 dirInit();
 fileInit();

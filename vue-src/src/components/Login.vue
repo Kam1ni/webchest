@@ -33,13 +33,18 @@
 		methods:{
 			async login(){
 				try{
-					console.log("Logging in");
+					/*console.log("Logging in");
 					let response = await this.$http.post("auth/login", {username: this.username, password: this.password});
 					console.log(response.body.token);
-					this.$emit("login", response.body.token);
+					this.$emit("login", response.body.token);*/
+					await this.$AuthService.login(this.username, this.password);
 				}catch(err){
 					console.log(err)
-					this.errorMessage = err.body.message;
+					if (err.body){
+						this.errorMessage = err.body.message;
+					}else{
+						this.errorMessage = err.message;
+					}
 					this.showError = true;
 				}
 			}
