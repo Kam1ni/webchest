@@ -4,6 +4,9 @@ import {Http} from 'vue-resource'
 class AuthService extends EventEmitter{
 	constructor(){
 		super();
+		this.fetchProfile().catch((err)=>{
+			console.error("Failed to fetch profile");
+		});
 	}
 
 	async login(username, password){
@@ -16,6 +19,12 @@ class AuthService extends EventEmitter{
 
 	isLoggedIn(){
 		return localStorage.getItem("token") != null;
+	}
+
+	async fetchProfile(){
+		let response = await Http.get("auth");
+		this.user = response.body;
+		console.log(this.user);
 	}
 
 	async logout(){
