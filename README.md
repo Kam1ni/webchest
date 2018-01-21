@@ -3,6 +3,12 @@ Online web storage build with MEVN
 
 To keep it short, it will be Google Drive Lite that you can host your self. No more monthly subscription fee's for extra storage space.
 
-This is still a WIP and most core features aren't even implemented yet. V1.0.0 is planned to roll out before March 2018.
+## Deploy
+
+This project requires node v8 at least.
+
+1. Run "npm install" in both the client and server directory
+2. Run "npm run build" inside the client directory
+3. Run "npm run start" inside the server directory
 
 ![logo](https://github.com/Kam1ni/mevn-drive/blob/master/server/res/img/logo.png?raw=true)
