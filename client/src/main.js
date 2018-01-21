@@ -9,7 +9,11 @@ import AuthService from './services/auth-service';
 import AppError from './components/common/Error.vue';
 
 Vue.use(VueResource);
-Vue.http.options.root = "http://localhost:3000/";
+if (process.env.NODE_ENV == "development"){
+	Vue.http.options.root = "http://localhost:3000/";
+}else{
+	Vue.http.options.root = "/";
+}
 Vue.http.interceptors.push(function(req,next){
 	if (localStorage.getItem("token")){
 		req.headers.set('Authorization', localStorage.getItem("token"));
