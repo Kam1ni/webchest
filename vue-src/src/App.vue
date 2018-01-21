@@ -10,7 +10,9 @@
 					<v-btn flat @click="logout">Logout</v-btn>
 				</v-toolbar-items>
 			</v-toolbar>
-			<router-view/>
+			<transition name="slide-x-transition" mode="out-in">
+				<router-view/>
+			</transition>
 		</template>
 		<v-layout row justify-center wrap align-center class="teal-background" fill-height v-if="!loggedIn">
 			<v-flex xs10 sm8 md6>

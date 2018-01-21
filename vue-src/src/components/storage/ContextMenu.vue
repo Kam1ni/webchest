@@ -1,42 +1,44 @@
 <template>
-	<v-menu offset-y v-model="show" absolute :position-x="x" :left="left"  :bottom="bottom" :position-y="y">
-		<v-list>
-			<v-list-tile @click="newDir()">
-				<v-list-tile-avatar>
-					<v-icon>folder</v-icon>
-				</v-list-tile-avatar>
-				<v-list-tile-content>
-					New Folder
-				</v-list-tile-content>
-			</v-list-tile>
-			<v-list-tile @click="renameClicked()" v-if="item">
-				<v-list-tile-avatar>
-					<v-icon>mode_edit</v-icon>
-				</v-list-tile-avatar>
-				<v-list-tile-content>
-					Rename
-				</v-list-tile-content>
-			</v-list-tile>
-			<v-list-tile @click="moveClicked()" v-if="item">
-				<v-list-tile-avatar>
-					<v-icon>reply</v-icon>
-				</v-list-tile-avatar>
-				<v-list-tile-content>
-					Move
-				</v-list-tile-content>
-			</v-list-tile>
-			<v-list-tile @click="deleteItem()" v-if="item">
-				<v-list-tile-avatar>
-					<v-icon>delete</v-icon>
-				</v-list-tile-avatar>
-				<v-list-tile-content>
-					Delete
-				</v-list-tile-content>
-			</v-list-tile>
-		</v-list>
-		<app-text-field-dialog v-model="textEditField.show" :title="textEditField.title" :label="textEditField.label" @submit="textEditField.submit"></app-text-field-dialog>
-		<app-nav-dialog v-model="navigationMenu.show" @submit="navigationMenu.submit" :title="navigationMenu.title" :submitButton="navigationMenu.submitButton"></app-nav-dialog>
-	</v-menu>
+	<transition name="slide-y-transition">
+		<v-menu offset-y v-model="show" absolute :position-x="x" :left="left"  :bottom="bottom" :position-y="y">
+			<v-list>
+				<v-list-tile @click="newDir()">
+					<v-list-tile-avatar>
+						<v-icon>folder</v-icon>
+					</v-list-tile-avatar>
+					<v-list-tile-content>
+						New Folder
+					</v-list-tile-content>
+				</v-list-tile>
+				<v-list-tile @click="renameClicked()" v-if="item">
+					<v-list-tile-avatar>
+						<v-icon>mode_edit</v-icon>
+					</v-list-tile-avatar>
+					<v-list-tile-content>
+						Rename
+					</v-list-tile-content>
+				</v-list-tile>
+				<v-list-tile @click="moveClicked()" v-if="item">
+					<v-list-tile-avatar>
+						<v-icon>reply</v-icon>
+					</v-list-tile-avatar>
+					<v-list-tile-content>
+						Move
+					</v-list-tile-content>
+				</v-list-tile>
+				<v-list-tile @click="deleteItem()" v-if="item">
+					<v-list-tile-avatar>
+						<v-icon>delete</v-icon>
+					</v-list-tile-avatar>
+					<v-list-tile-content>
+						Delete
+					</v-list-tile-content>
+				</v-list-tile>
+			</v-list>
+			<app-text-field-dialog v-model="textEditField.show" :title="textEditField.title" :label="textEditField.label" @submit="textEditField.submit"></app-text-field-dialog>
+			<app-nav-dialog v-model="navigationMenu.show" @submit="navigationMenu.submit" :title="navigationMenu.title" :submitButton="navigationMenu.submitButton"></app-nav-dialog>
+		</v-menu>
+	</transition>
 </template>
 
 <script>
