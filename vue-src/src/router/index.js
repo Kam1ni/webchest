@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Storage from '../components/Storage.vue';
-import Profile from '../components/Profile.vue';
+import Settings from '../components/Settings.vue';
 
 Vue.use(Router)
 
@@ -16,8 +16,8 @@ export default new Router({
 			component: Storage
 		},
 		{
-			path: '/profile',
-			component: Profile
+			path: '/settings',
+			component: Settings
 		}
 	]
 })

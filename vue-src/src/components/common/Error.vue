@@ -20,7 +20,15 @@
 			},
 			value(newVal, oldVal){
 				if (newVal != null){
-					this.message = newVal;
+					if (newVal.body){
+						this.message = newVal.message;
+					}
+					else if (newVal.message){
+						this.message = newVal.message;
+					}
+					else{
+						this.message = newVal;
+					}
 					this.show = this.value;
 					this.$emit("input", null);
 				}
