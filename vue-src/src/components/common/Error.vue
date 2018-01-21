@@ -21,7 +21,7 @@
 			value(newVal, oldVal){
 				if (newVal != null){
 					if (newVal.body){
-						this.message = newVal.message;
+						this.message = newVal.body.message;
 					}
 					else if (newVal.message){
 						this.message = newVal.message;

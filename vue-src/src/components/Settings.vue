@@ -5,7 +5,7 @@
 				<app-profile :user="user" @error="error = $event"></app-profile>
 			</v-flex>
 			<v-flex xs12 mt-4>
-				<app-users v-if="user.isAdmin"></app-users>
+				<app-users v-if="user.isAdmin" @error="error = $event"></app-users>
 			</v-flex>
 		</v-layout>
 		<app-error v-model="error"></app-error>
