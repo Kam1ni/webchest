@@ -56,7 +56,3 @@ typings/
 
 # dotenv environment variables file
 .env
-
-/server/config/
-/server/files/
-/server/public/*

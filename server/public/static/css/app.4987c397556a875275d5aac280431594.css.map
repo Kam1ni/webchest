@@ -1,1 +1,0 @@
-{"version":3,"sources":["app.4987c397556a875275d5aac280431594.css"],"names":[],"mappings":"AACA,iBACC,wBAA0B,CAC1B,AAED,8BACC,kBAAmB,AACnB,aAAe,CACf","file":"app.4987c397556a875275d5aac280431594.css","sourcesContent":["\n.teal-background{\n\tbackground-color: #004d40;\n}\n\n#contextMenu[data-v-518c464c]{\n\tposition: absolute;\n\tdisplay: block;\n}\n"]}
