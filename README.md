@@ -11,4 +11,4 @@ This project requires node v8 at least.
 2. Run "npm run build" inside the client directory
 3. Run "npm run start" inside the server directory
 
-![logo](https://github.com/Kam1ni/mevn-drive/blob/master/logo.png?raw=true)
+![](https://github.com/Kam1ni/mevn-drive/blob/master/logo.png?raw=true | width=256)
