@@ -24,6 +24,11 @@ init().then(function(){
 		res.status(err.status || 500).json({message: err.message});
 	});
 
+	app.use("/", express.static("public"));
+	app.all("/*", function(req,res){
+		res.sendFile("./public/index.html");
+	});
+
 	const httpServer = http.createServer(app);
 	httpServer.listen(config.server.port, config.server.host, function(err){
 		if (err){
