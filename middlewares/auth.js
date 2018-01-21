@@ -5,7 +5,7 @@ const config = require("../config");
 module.exports = {
 	authenticate: async function(req,res,next){
 		try{
-			req.user = await User.findOne({tokens:req.headers.authorization});
+			req.user = await User.findOne({tokens:{$elemMatch: {token: req.headers.authorization}}});
 			if (!req.user){
 				throw new Error("Invalid token");
 			}

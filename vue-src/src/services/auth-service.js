@@ -31,6 +31,7 @@ class AuthService extends EventEmitter{
 		let response = await Http.get("auth");
 		this.user = response.body;
 		console.log(this.user);
+		this.emit("login", this.user);
 	}
 
 	async logout(){
@@ -38,6 +39,15 @@ class AuthService extends EventEmitter{
 		localStorage.clear();
 		this.user = {};
 		this.emit("logout");
+	}
+
+	async removeToken(token){
+		this.user = (await Http.delete("auth/logout/" + token)).body;
+		this.emit("login", this.user);
+	}
+
+	getToken(){
+		return localStorage.getItem("token");
 	}
 }
 

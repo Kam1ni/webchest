@@ -21,7 +21,8 @@ router.post("/login", async function(req, res, next){
 			throw new Error("Invalid login");
 		}
 		let token = JWT.sign({userId: user._id, date: new Date()} , config.auth.secret);
-		user.tokens.push(token);
+		let deviceName = (req.headers['x-forwarded-for'] || req.connection.remoteAddress) + " at " + new Date().toLocaleDateString()
+		user.tokens.push({token, deviceName});
 		await user.save();
 		res.json({token});
 	}catch(err){
@@ -57,7 +58,14 @@ router.delete("/logout", mAuth.authenticate, async function(req,res,next){
 
 router.delete("/logout/:token", mAuth.authenticate, async function(req,res,next){
 	try{
-		req.user.tokens.splice(req.user.tokens.indexOf(req.params.token), 1);
+		let index = null;
+		for (let i in req.user.tokens){
+			if (req.user.tokens[i].token == req.params.token)
+				index = i;
+		}
+		if (index){
+			req.user.tokens.splice(index, 1);
+		}
 		await req.user.save();
 		res.json(req.user);
 	}catch(err){

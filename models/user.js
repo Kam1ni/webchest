@@ -26,7 +26,8 @@ const userSchema = new mongoose.Schema({
 	tokens:{
 		type: [
 			{
-				type: String
+				token:{type: String, required: true},
+				deviceName: {type: String, required: true},
 			}
 		],
 		default: []

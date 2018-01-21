@@ -5,8 +5,8 @@
 				<v-toolbar-title>MEVN-Drive</v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-toolbar-items>
-					<v-btn flat to="storage">Storage</v-btn>
-					<v-btn flat to="profile">Profile</v-btn>
+					<v-btn flat to="/storage">Storage</v-btn>
+					<v-btn flat to="/profile">Profile</v-btn>
 					<v-btn flat @click="logout">Logout</v-btn>
 				</v-toolbar-items>
 			</v-toolbar>
