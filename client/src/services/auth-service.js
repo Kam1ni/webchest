@@ -4,17 +4,20 @@ import {Http} from 'vue-resource'
 class AuthService extends EventEmitter{
 	constructor(){
 		super();
-		this.fetchProfile().catch((err)=>{
-			console.error("Failed to fetch profile");
-		});
 		this.user = {};
+		if (this.isLoggedIn()){
+			this.fetchProfile().catch((err)=>{
+				console.error("Failed to fetch profile");
+			});
+		}
 	}
 
 	async login(username, password){
 		let response = await Http.post("auth/login", {username: username, password: password});
 		this.user = response.body;
+		console.log(response.body);
 		localStorage.setItem("token", response.body.token);
-		this.emit("login", response.body);
+		this.emit("login", this.user);
 		return this.user;
 	}
 
@@ -30,7 +33,6 @@ class AuthService extends EventEmitter{
 	async fetchProfile(){
 		let response = await Http.get("auth");
 		this.user = response.body;
-		console.log(this.user);
 		this.emit("login", this.user);
 	}
 

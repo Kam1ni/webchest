@@ -24,7 +24,7 @@ router.post("/login", async function(req, res, next){
 		let deviceName = (req.headers['x-forwarded-for'] || req.connection.remoteAddress) + " at " + new Date().toLocaleDateString()
 		user.tokens.push({token, deviceName});
 		await user.save();
-		res.json({token});
+		res.json({...user._doc, token});
 	}catch(err){
 		err.status = 401;
 		next(err);
