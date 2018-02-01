@@ -1,19 +1,38 @@
 <template>
 	<v-app style="overflow: hidden">
 		<template v-if="loggedIn">
-			<v-toolbar app color="teal darken-4" dark>
-				<v-toolbar-title>MEVN-Drive</v-toolbar-title>
-				<v-spacer></v-spacer>
-				<v-toolbar-items>
-					<v-btn flat to="/storage">Storage</v-btn>
-					<v-btn flat to="/settings">Settings</v-btn>
-					<v-btn flat @click="logout">Logout</v-btn>
-				</v-toolbar-items>
+			<v-navigation-drawer app clipped fixed v-model="drawer">
+				<v-list>
+					<v-list-tile to="/storage" active-class="primary white--text">
+						<v-list-tile-content>
+							Storage
+						</v-list-tile-content>
+					</v-list-tile>
+					<v-list-tile to="/settings" active-class="primary white--text">
+						<v-list-tile-content>
+							Settings
+						</v-list-tile-content>
+					</v-list-tile>
+					<v-list-tile @click="logout" active-class="primary white--text">
+						<v-list-tile-content>
+							Logout
+						</v-list-tile-content>
+					</v-list-tile>
+				</v-list>
+			</v-navigation-drawer>
+
+			<v-toolbar app fixed clipped-left class="primary" dark>
+				<v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+        		<span class="hidden-xs-only">MEVN-drive</span>
 			</v-toolbar>
-			<transition name="slide-x-transition" mode="out-in">
-				<router-view/>
-			</transition>
+
+			<v-content>
+				<transition name="slide-x-transition" mode="out-in">
+					<router-view/>
+				</transition>
+			</v-content>
 		</template>
+
 		<v-layout row justify-center wrap align-center class="teal-background" fill-height v-if="!loggedIn">
 			<v-flex xs10 sm8 md6>
 				<app-login></app-login>
@@ -29,7 +48,8 @@ export default {
 	name: 'App',
 	data(){
 		return {
-			loggedIn: false
+			loggedIn: false,
+			drawer: null
 		}
 	},
 	components: {
