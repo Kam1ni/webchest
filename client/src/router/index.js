@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Storage from '../components/Storage.vue';
 import Settings from '../components/Settings.vue';
-import EditUser from '../components/settings/EditUser.vue';
+import EditUser from '../components/EditUser.vue';
+import Users from '../components/Users.vue';
 
 Vue.use(Router)
 
@@ -21,7 +22,11 @@ export default new Router({
 			component: Settings
 		},
 		{
-			path: '/settings/users/:id?',
+			path: '/users',
+			component: Users
+		},
+		{
+			path: '/users/edit/:id?',
 			component: EditUser
 		}
 	]

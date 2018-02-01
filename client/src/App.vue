@@ -13,6 +13,11 @@
 							Settings
 						</v-list-tile-content>
 					</v-list-tile>
+					<v-list-tile to="/users" v-if="user.isAdmin" active-class="primary white--text">
+						<v-list-tile-content>
+							Users
+						</v-list-tile-content>
+					</v-list-tile>
 					<v-list-tile @click="logout" active-class="primary white--text">
 						<v-list-tile-content>
 							Logout
@@ -49,7 +54,8 @@ export default {
 	data(){
 		return {
 			loggedIn: false,
-			drawer: null
+			drawer: null,
+			user: null
 		}
 	},
 	components: {
@@ -69,11 +75,14 @@ export default {
 	},
 	created(){
 		this.loggedIn = this.$AuthService.isLoggedIn();
+		this.user = this.$AuthService.user;
 		this.$AuthService.on("login", (user)=>{
+			this.user = user;
 			this.loggedIn = true;
 		});
 		this.$AuthService.on("logout", ()=>{
 			this.loggedIn = false;
+			this.user = null;
 		});
 	}
 }
