@@ -4,32 +4,56 @@
 			<v-flex xs12>
 				<v-card>
 					<v-card-title>
-						Users:
+						Users
 					</v-card-title>
 					<v-list>
 						<v-list-tile v-for="(user, i) in users" :key="i">
 							<v-list-tile-content>
 								{{user.username}}
 							</v-list-tile-content>
-							<v-list-tile-action style="cursor:pointer;" @click="editUser(user._id)">
-								<v-icon >edit</v-icon>
+							<v-list-tile-action >
+								<app-edit-user v-model="editUserId">
+									<v-icon style="cursor:pointer;"  slot="activator" @click="editUser(user)">edit</v-icon>
+								</app-edit-user>
 							</v-list-tile-action>
-							<v-list-tile-action style="cursor:pointer;" @click="deleteUser(user, i)">
-								<v-icon>delete</v-icon>
+							<v-list-tile-action>
+								<v-icon style="cursor:pointer;" @click="deleteUser(user, i)">delete</v-icon>
 							</v-list-tile-action>
 						</v-list-tile>
 					</v-list>
 				</v-card>
 			</v-flex>
 		</v-layout>
-		<v-btn fab right bottom fixed color="primary" to="/users/edit"><v-icon>add</v-icon></v-btn>
+		<v-btn fab right bottom fixed color="primary" @click="addUser"><v-icon>add</v-icon></v-btn>
 	</v-container>
 </template>
 
 <script>
+	import EditUser from './users/EditUser.vue';
 	export default {
 		data(){
-			return {users:[]};
+			return {
+				users:[],
+				editUserId: null,
+			};
+		},
+		watch:{
+			editUserId(newVal, oldVal){
+				if (newVal == "updated"){
+					this.editUserId = null;
+					this.getUsers();
+				}
+			}
+		},
+		computed:{
+			maxSpace:{
+				get(){
+					return this.user.maxSpace / this.maxSpaceMultiplier;
+				},
+				set(value){
+					this.user.maxSpace = value*this.maxSpaceMultiplier;
+				}
+			}
 		},
 		methods: {
 			async deleteUser(user, i){
@@ -42,17 +66,26 @@
 					this.$emit("error", err);
 				}
 			},
-			editUser(userId){
-				this.$router.push({path: "/users/edit/" + userId});
+			editUser(user){
+				this.editUserId = user._id;
+			},
+			addUser(){
+				this.editUserId = "";
+			},
+			async getUsers(){
+				try{
+					this.users = (await this.userRes.get()).body;
+				}catch(err){
+					this.$emit("error", err);
+				}
 			}
 		},
-		async created(){
+		created(){
 			this.userRes = this.$resource("user{/id}");
-			try{
-				this.users = (await this.userRes.get()).body;
-			}catch(err){
-				this.$emit("error", err);
-			}
+			this.getUsers();
+		},
+		components:{
+			"app-edit-user":EditUser
 		}
 	}
 </script>

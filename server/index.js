@@ -5,6 +5,7 @@ const cors = require("cors");
 const http = require("http");
 
 init().then(function(){
+	console.log("Initialised")
 	const config = require("./config");
 	const app = express();
 
@@ -25,7 +26,7 @@ init().then(function(){
 	});
 
 	app.use("/", express.static("public"));
-	app.all("/*", function(req,res){
+	app.all("/", function(req,res){
 		res.sendFile("./public/index.html");
 	});
 

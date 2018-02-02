@@ -11,6 +11,7 @@ module.exports = {
 			}
 			next();
 		}catch(err){
+			console.log(err);
 			err.status = 401;
 			next(err);
 		}
@@ -26,6 +27,7 @@ module.exports = {
 			}
 			next();
 		}catch(err){
+			console.log(err);
 			err.status = 401;
 			next(err);
 		}
