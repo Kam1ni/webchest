@@ -27,7 +27,7 @@
 					</div>
 					<v-container>
 						<v-list>
-							<v-list-tile v-for="(token, i) in user.tokens" :key="i" v-if="token.token != $AuthService.getToken()">
+							<v-list-tile v-for="(token, i) in user.tokens" :key="i" v-if="token.token != $AuthService.token">
 								<v-list-tile-content>
 									{{token.deviceName}}
 								</v-list-tile-content>

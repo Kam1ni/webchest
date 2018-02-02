@@ -12,11 +12,19 @@ class AuthService extends EventEmitter{
 		}
 	}
 
+	get token(){
+		return localStorage.getItem("token");
+	}
+
+	set token(value){
+		localStorage.setItem("token", value);
+	}
+
 	async login(username, password){
 		let response = await Http.post("auth/login", {username: username, password: password});
 		this.user = response.body;
 		console.log(response.body);
-		localStorage.setItem("token", response.body.token);
+		this.token = response.body.token;
 		this.emit("login", this.user);
 		return this.user;
 	}
@@ -48,13 +56,17 @@ class AuthService extends EventEmitter{
 		this.emit("login", this.user);
 	}
 
-	getToken(){
-		return localStorage.getItem("token");
+	tokenIsInvalid(){
+		localStorage.clear();
+		this.user = {};
+		this.emit("logout");
 	}
 }
 
 export default {
 	install(Vue, options){
-		Vue.prototype.$AuthService = new AuthService();
+		Vue.AuthService = new AuthService();
+		Vue.prototype.$AuthService = Vue.AuthService;
+		
 	}
 }

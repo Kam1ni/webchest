@@ -18,17 +18,13 @@ module.exports = {
 	},
 	admin: async function(req,res,next){
 		try{
-			req.user = await User.findOne({tokens:{$elemMatch: {token: req.headers.authorization}}});
-			if (!req.user){
-				throw new Error("Invalid token");
-			}
 			if (!req.user.isAdmin){
 				throw new Error("This is an admin only route");
 			}
 			next();
 		}catch(err){
 			console.log(err);
-			err.status = 401;
+			err.status = 403;
 			next(err);
 		}
 	}

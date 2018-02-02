@@ -17,7 +17,7 @@ init().then(function(){
 	app.use("/auth", require("./routes/auth"));
 	app.use("/dir", auth.authenticate, require("./routes/directory"));
 	app.use("/file", auth.authenticate, require("./routes/file"));
-	app.use("/user", auth.admin, require("./routes/user"));
+	app.use("/user", auth.authenticate, auth.admin, require("./routes/user"));
 
 	app.use(function(err, req,res,next){
 		console.error(err.message);

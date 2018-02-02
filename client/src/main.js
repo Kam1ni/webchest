@@ -20,7 +20,12 @@ Vue.http.interceptors.push(function(req,next){
 	if (localStorage.getItem("token")){
 		req.headers.set('Authorization', localStorage.getItem("token"));
 	}
-	next();
+	next((res)=>{
+		console.log(res);
+		if (res.status == 401){
+			Vue.AuthService.tokenIsInvalid();
+		}
+	});
 });
 
 Vue.use(AuthService);
