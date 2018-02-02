@@ -1,5 +1,5 @@
 <template>
-	<v-app style="overflow: hidden">
+	<v-app>
 		<template v-if="loggedIn">
 			<v-navigation-drawer app clipped fixed v-model="drawer">
 				<v-list>
