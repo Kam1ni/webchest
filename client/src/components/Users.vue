@@ -17,13 +17,16 @@
 								</app-edit-user>
 							</v-list-tile-action>
 							<v-list-tile-action>
-								<v-icon style="cursor:pointer;" @click="deleteUser(user, i)">delete</v-icon>
+								<v-icon style="cursor:pointer;" @click="confirmDeleteUser(user)">delete</v-icon>
 							</v-list-tile-action>
 						</v-list-tile>
 					</v-list>
 				</v-card>
 			</v-flex>
 		</v-layout>
+		<app-confirm-dialog v-model="showDeleteUser" @yes="deleteUser" title="Warning">
+			<span v-if="toDeleteUser">Are you sure you want to delete {{toDeleteUser.name}}</span>
+		</app-confirm-dialog>
 		<v-btn fab right bottom fixed color="primary" @click="addUser"><v-icon>add</v-icon></v-btn>
 	</v-container>
 </template>
@@ -35,6 +38,8 @@
 			return {
 				users:[],
 				editUserId: null,
+				showDeleteUser: false,
+				toDeleteUser: null
 			};
 		},
 		watch:{
@@ -56,15 +61,20 @@
 			}
 		},
 		methods: {
-			async deleteUser(user, i){
+			confirmDeleteUser(user){
+				this.toDeleteUser = user; 
+				this.showDeleteUser = true;
+			},
+			async deleteUser(){
 				console.log("deleting");
 				try{
-					await this.userRes.delete({id:user._id});
-					this.users.splice(i,1);
+					await this.userRes.delete({id:this.toDeleteUser._id});
 				}catch(err){
 					console.log(err);
 					this.$emit("error", err);
 				}
+				this.toDeleteUser = null;
+				this.getUsers();
 			},
 			editUser(user){
 				this.editUserId = user._id;
