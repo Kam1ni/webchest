@@ -13,6 +13,6 @@ module.exports = async function(){
 		}
 		user.set(confUser);
 		await user.save();
-		console.log("Created user " + user.username);
+		console.log(`${user.isNew ? "Created" : "Updated"} user ${user.username}`);
 	}
 }
