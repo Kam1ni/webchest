@@ -46,7 +46,7 @@
 									<v-list-tile-content>
 										{{token.deviceName}}
 									</v-list-tile-content>
-									<v-list-tile-avatar @click="removeToken(token.token)" v-if="token.token != $AuthService.token">
+									<v-list-tile-avatar @click="confirmRemoveToken(token)" v-if="token.token != $AuthService.token">
 										<v-icon>delete</v-icon>
 									</v-list-tile-avatar>
 									<v-list-tile-avatar v-else>
@@ -56,6 +56,9 @@
 							</v-list>
 						</v-flex>
 					</v-layout>
+					<app-confirm-dialog v-model="removeTokenDialog" :yes-param="toRemoveToken" @yes="removeToken">
+						<span v-if="toRemoveToken">Are you sure you want to remove "{{toRemoveToken.deviceName}}"?</span>
+					</app-confirm-dialog>
 				</v-card-text>
 			</v-card>
 		</v-flex>
@@ -78,7 +81,9 @@
 							return v == this.password.newPassword || "Passwords don't match";
 						}
 					]
-				}
+				},
+				removeTokenDialog:false,
+				toRemoveToken:null
 			}
 		},
 		methods:{
@@ -92,10 +97,14 @@
 			},
 			async removeToken(token){
 				try{
-					await this.$AuthService.removeToken(token);
+					await this.$AuthService.removeToken(token.token);
 				}catch(err){
 					this.$emit("error", err)
 				}
+			},
+			confirmRemoveToken(token){
+				this.toRemoveToken = token;
+				this.removeTokenDialog = true;
 			}
 		},
 		created(){
