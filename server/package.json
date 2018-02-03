@@ -1,5 +1,5 @@
 {
-  "name": "mevn-drive",
+  "name": "webchest",
   "version": "0.9.0",
   "description": "Browser based storage build on the mevn-stack",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Kam1ni/mevn-drive"
+    "url": "https://github.com/Kam1ni/webchest"
   },
   "author": "Kamil Krzysztof Kulach (kamil.k@live.be)",
   "license": "MIT",

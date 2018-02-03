@@ -1,7 +1,7 @@
 {
   "name": "vue-src",
   "version": "1.0.0",
-  "description": "MEVN-drive front end",
+  "description": "WebChest client",
   "author": "Kamil Krzysztof Kulach",
   "private": true,
   "scripts": {

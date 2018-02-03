@@ -28,7 +28,7 @@
 
 			<v-toolbar app fixed clipped-left class="primary" dark>
 				<v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        		<span class="hidden-xs-only">MEVN-drive</span>
+        		<span class="hidden-xs-only">WebChest</span>
 			</v-toolbar>
 
 			<v-content>

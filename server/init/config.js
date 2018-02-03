@@ -8,7 +8,7 @@ const defaultServerFile = {
 	fileDir: path.resolve(__dirname, "../files"),
 	db:{
 		host: "mongodb://localhost:27017",
-		database: "mevn-drive",
+		database: "webchest",
 		username: "NOT YET IMPLEMENTED",
 		password: "NOT YET IMPLEMENTED"
 	}
