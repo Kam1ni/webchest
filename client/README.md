@@ -1,6 +1,6 @@
-# vue-src
+# WebChest client
 
-> MEVN-drive front end
+> WebChest front end
 
 ## Build Setup
 
