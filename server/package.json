@@ -20,7 +20,7 @@
     "express": "^4.16.2",
     "express-fileupload": "^0.3.0",
     "jsonwebtoken": "^8.1.0",
-    "mongoose": "^5.0.3",
+    "mongoose": "^4.13.10",
     "mongoose-bcrypt": "^1.5.0",
     "mongoose-hidden": "^1.5.1",
     "mongoose-id-validator": "^0.4.3"
