@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const http = require("http");
+const path = require("path");
 
 init().then(function(){
 	console.log("Initialised")
@@ -26,8 +27,8 @@ init().then(function(){
 	});
 
 	app.use("/", express.static("public"));
-	app.all("/", function(req,res){
-		res.sendFile("./public/index.html");
+	app.all("/*", function(req,res){
+		res.sendFile(path.resolve(__dirname, "./public/index.html"));
 	});
 
 	const httpServer = http.createServer(app);
