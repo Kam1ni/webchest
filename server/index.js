@@ -37,6 +37,7 @@ init().then(function(){
 			console.error("Could not start server");
 			console.error(err.message);
 			console.error(err.stack);
+			process.exit(-1);
 		}else{
 			console.log("Server is running on " + config.server.host + ":" + config.server.port);
 		}
@@ -45,4 +46,5 @@ init().then(function(){
 	console.error("An error occured and the server couldn't be started");
 	console.error(err.message);
 	console.error(err.stack);
+	process.exit(-1);
 });
