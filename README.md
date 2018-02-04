@@ -12,3 +12,5 @@ This project requires node v8 at least and a working mongodb server.
 3. Run "npm run start" inside the server directory
 
 ![logo](https://github.com/Kam1ni/webchest/blob/master/logo.png?raw=true)
+
+DOING A TEST
