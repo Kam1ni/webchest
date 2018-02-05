@@ -1,37 +1,37 @@
 <template>
-	<v-container fluid style="padding: 0px;" @drop.prevent="onFileDrop" @dragover.prevent @contextmenu.prevent="showMenu($event)">
-		<app-nav :current="dir"/>
-			<v-layout row wrap >
-				<v-flex xs12>
-					<v-list v-if="dir">
-						<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'dir', index)" avatar v-for="(item, index) in dir.directories" :key="item._id" @click="openDir(item._id)">
-							<v-list-tile-avatar>
-								<v-icon>folder</v-icon>
-							</v-list-tile-avatar>
-							<v-list-tile-content>
-								<v-list-tile-title v-text="item.name"></v-list-tile-title>
-							</v-list-tile-content>
-							<v-list-tile-action @click.stop="downloadItem(item)">
-								<v-icon>file_download</v-icon>
-							</v-list-tile-action>
-						</v-list-tile>
-						<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'file', index)" avatar v-for="(item, index) in dir.files" :key="item._id" @click.stop>
-							<v-list-tile-avatar>
-								<v-icon>insert_drive_file</v-icon>
-							</v-list-tile-avatar>
-							<v-list-tile-content>
-								<v-list-tile-title v-text="item.name"></v-list-tile-title>
-							</v-list-tile-content>
-							<v-list-tile-action @click.stop="downloadItem(item)">
-								<v-icon>file_download</v-icon>
-							</v-list-tile-action>
-						</v-list-tile>
-					</v-list>
-				</v-flex>
-				<app-context-menu :x="contextMenu.x" :y="contextMenu.y" v-model="contextMenu.show" :item="clickedItem.item" :type="clickedItem.type" @error="showError($event)" :dir="dir"></app-context-menu>
-				<app-error v-model="error"></app-error>
-			</v-layout>
-	</v-container>
+	<v-layout row wrap fill-height>
+		<v-flex xs12>
+			<app-nav :current="dir"/>
+		</v-flex>
+		<v-flex xs12 fill-height row @drop.prevent="onFileDrop" @dragover.prevent @contextmenu.prevent="showMenu($event)">
+			<v-list v-if="dir">
+				<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'dir', index)" avatar v-for="(item, index) in dir.directories" :key="item._id" @click="openDir(item._id)">
+					<v-list-tile-avatar>
+						<v-icon>folder</v-icon>
+					</v-list-tile-avatar>
+					<v-list-tile-content>
+						<v-list-tile-title v-text="item.name"></v-list-tile-title>
+					</v-list-tile-content>
+					<v-list-tile-action @click.stop="downloadItem(item)">
+						<v-icon>file_download</v-icon>
+					</v-list-tile-action>
+				</v-list-tile>
+				<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'file', index)" avatar v-for="(item, index) in dir.files" :key="item._id" @click.stop>
+					<v-list-tile-avatar>
+						<v-icon>insert_drive_file</v-icon>
+					</v-list-tile-avatar>
+					<v-list-tile-content>
+						<v-list-tile-title v-text="item.name"></v-list-tile-title>
+					</v-list-tile-content>
+					<v-list-tile-action @click.stop="downloadItem(item)">
+						<v-icon>file_download</v-icon>
+					</v-list-tile-action>
+				</v-list-tile>
+			</v-list>
+		</v-flex>
+		<app-context-menu :x="contextMenu.x" :y="contextMenu.y" v-model="contextMenu.show" :item="clickedItem.item" :type="clickedItem.type" @error="showError($event)" :dir="dir"></app-context-menu>
+		<app-error v-model="error"></app-error>
+	</v-layout>
 </template>
 
 <script>
