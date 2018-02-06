@@ -3,9 +3,8 @@
 		<v-flex xs12>
 			<app-nav :current="dir"/>
 		</v-flex>
-		<v-flex dark xs12 fill-height row @drop.prevent="onFileDrop" @dragleave="dragover=false" @dragover.prevent="dragover=true" @contextmenu.prevent="showMenu($event)">
-			<v-flex teal :class="{'hover-container': true, 'hover-container-visible':dragover}" fill-height/>
-			<v-list v-if="dir">
+		<v-flex :teal="dragover" class="item-container" dark xs12 fill-height row @drop.prevent="onFileDrop" @dragleave="dragover=false" @dragover.prevent="dragover=true" @contextmenu.prevent="showMenu($event)">
+			<v-list v-if="dir" style="background:transparent;">
 				<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'dir', index)" avatar v-for="(item, index) in dir.directories" :key="item._id" @click="openDir(item._id)">
 					<v-list-tile-avatar>
 						<v-icon>folder</v-icon>
@@ -148,16 +147,7 @@
 		position: absolute;
 		display: block;
 	}
-	.hover-container{
-		width:100%;
-		height:100%;
-		overflow: hidden;
-		opacity: 0; 
-		position: absolute;
-		z-index: 10;
-		transition: opacity .25s;
-	}
-	.hover-container-visible{
-		opacity: 0.3;
+	.item-container{
+		transition: background-color 0.25s;
 	}
 </style>

@@ -132,11 +132,15 @@ Dir.Uploader = class {
 						if (item.isFile){
 							console.log("uploading file");
 							let uploader = new File.Uploader(item, dir);;
-							await uploader.upload();
+							uploader.upload().catch((err)=>{
+								console.error(err);
+							});
 						}else{
 							console.log("uploading dir");
 							let uploader = new Dir.Uploader(item, dir);
-							await uploader.upload();
+							uploader.upload().catch((err)=>{
+								console.error(err);
+							});
 						}
 					}
 					resolve();
