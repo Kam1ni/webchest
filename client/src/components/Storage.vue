@@ -3,7 +3,8 @@
 		<v-flex xs12>
 			<app-nav :current="dir"/>
 		</v-flex>
-		<v-flex xs12 fill-height row @drop.prevent="onFileDrop" @dragover.prevent @contextmenu.prevent="showMenu($event)">
+		<v-flex dark xs12 fill-height row @drop.prevent="onFileDrop" @dragleave="dragover=false" @dragover.prevent="dragover=true" @contextmenu.prevent="showMenu($event)">
+			<v-flex teal :class="{'hover-container': true, 'hover-container-visible':dragover}" fill-height/>
 			<v-list v-if="dir">
 				<v-list-tile @contextmenu.prevent.stop="showMenu($event, item, 'dir', index)" avatar v-for="(item, index) in dir.directories" :key="item._id" @click="openDir(item._id)">
 					<v-list-tile-avatar>
@@ -56,7 +57,8 @@
 					type: null,
 					index: 0
 				},
-				error: ""
+				error: "",
+				dragover: false
 			}
 		},
 		watch:{
@@ -95,6 +97,7 @@
 				console.log(err.stack);
 			},
 			async onFileDrop(event){
+				this.dragover = false;
 				let dt = event.dataTransfer;
 				for (let file of dt.items){
 					try{
@@ -144,5 +147,17 @@
 	#contextMenu{
 		position: absolute;
 		display: block;
+	}
+	.hover-container{
+		width:100%;
+		height:100%;
+		overflow: hidden;
+		opacity: 0; 
+		position: absolute;
+		z-index: 10;
+		transition: opacity .25s;
+	}
+	.hover-container-visible{
+		opacity: 0.3;
 	}
 </style>
