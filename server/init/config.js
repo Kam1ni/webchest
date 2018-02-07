@@ -21,6 +21,10 @@ const defaultAuthFile = {
 	secret:"secret"
 }
 
+const defaultClientFile = {
+	"server-endpoint": ""
+}
+
 function createFileIfNotExist(filename, config){
 	if (!fs.existsSync(path.resolve(__dirname, "../config/", filename + ".json"))){
 		fs.writeFileSync(path.resolve(__dirname, "../config/", filename + ".json"), JSON.stringify(config, null, 2));
@@ -34,6 +38,7 @@ module.exports = function(){
 	}
 	createFileIfNotExist("server", defaultServerFile);
 	createFileIfNotExist("auth", defaultAuthFile);
+	createFileIfNotExist("client", defaultClientFile);
 
 	const config = require("../config");
 	if (!fs.existsSync(config.server.fileDir)){

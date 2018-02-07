@@ -14,7 +14,11 @@ Vue.use(VueResource);
 if (process.env.NODE_ENV == "development"){
 	Vue.http.options.root = "http://localhost:3000/";
 }else{
-	Vue.http.options.root = "/";
+	Vue.http.get("/client").then((response)=>{
+		Vue.http.options.root = response.body["server-endpoint"];
+	}).catch((err)=>{
+		console.error(err);
+	})
 }
 Vue.http.interceptors.push(function(req,next){
 	if (localStorage.getItem("token")){
