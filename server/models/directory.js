@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const File = require("./file");
-const config = require("../config");
+const serverConfig = require("../config/server.json");
 const ValidatorError = mongoose.Error.ValidatorError;
 
 const directorySchema = new mongoose.Schema({
@@ -60,11 +60,7 @@ directorySchema.pre("validate", async function(next){
 		await this.populate("owner").execPopulate();
 	}
 	if (this.parent && !await this.parent.userCanEdit(this.owner)){
-		const props = {
-			type: 'Access Denied',
-			message: "Access denied",
-		}
-		return next (new ValidatorError(props));
+		return next (new Error("Access Denied"));
 	}
 
 	if (this.equals(this.parent)){
@@ -96,7 +92,7 @@ directorySchema.pre("validate", async function(next){
 
 directorySchema.methods.createZip = async function(){
 	let promise = new Promise(async (resolve, reject)=>{
-		let fileName = path.join(config.server.fileDir, this._id + "-" + new Date().getTime() + ".zip");
+		let fileName = path.join(serverConfig.fileDir, this._id + "-" + new Date().getTime() + ".zip");
 		let output = fs.createWriteStream(fileName);
 		let archive = archiver('zip', {
 			zlib:{level: 0}

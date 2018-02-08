@@ -7,7 +7,7 @@ const path = require("path");
 
 init().then(function(){
 	console.log("Initialised")
-	const config = require("./config");
+	const serverConfig = require("./config/server.json");
 	const app = express();
 
 	const auth = require("./middlewares/auth");
@@ -33,14 +33,14 @@ init().then(function(){
 	});
 
 	const httpServer = http.createServer(app);
-	httpServer.listen(config.server.port, config.server.host, function(err){
+	httpServer.listen(serverConfig.port, serverConfig.host, function(err){
 		if (err){
 			console.error("Could not start server");
 			console.error(err.message);
 			console.error(err.stack);
 			process.exit(-1);
 		}else{
-			console.log("Server is running on " + config.server.host + ":" + config.server.port);
+			console.log("Server is running on " + serverConfig.host + ":" + serverConfig.port);
 		}
 	})
 }).catch(function(err){

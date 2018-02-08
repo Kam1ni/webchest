@@ -1,6 +1,5 @@
 const JWT = require("jsonwebtoken");
 const User = require("../models/user");
-const config = require("../config");
 
 module.exports = {
 	authenticate: async function(req,res,next){

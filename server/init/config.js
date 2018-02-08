@@ -40,8 +40,8 @@ module.exports = function(){
 	createFileIfNotExist("auth", defaultAuthFile);
 	createFileIfNotExist("client", defaultClientFile);
 
-	const config = require("../config");
-	if (!fs.existsSync(config.server.fileDir)){
-		fs.mkdirSync(config.server.fileDir);
+	const serverConfig = require("../config/server.json");
+	if (!fs.existsSync(serverConfig.fileDir)){
+		fs.mkdirSync(serverConfig.fileDir);
 	}
 }

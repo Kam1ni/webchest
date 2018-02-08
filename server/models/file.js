@@ -2,8 +2,10 @@ const mongoose = require("mongoose");
 const idValidator = require("mongoose-id-validator");
 const fs = require("fs");
 const path = require("path");
-const config = require("../config");
-const ValidatorError = mongoose.Error.ValidatorError;
+const serverConfig = require("../config/server.json");
+const util = require("util");
+const fsStat = util.promisify(fs.stat);
+const fsUnlink = util.promisify(fs.unlink);
 
 const fileSchema = new mongoose.Schema({
 	name: {
@@ -37,27 +39,14 @@ const fileSchema = new mongoose.Schema({
 });
 
 fileSchema.virtual("fileLocation").get(function(){
-	return path.resolve(config.server.fileDir, this._id + "");
-})
+	return path.resolve(serverConfig.fileDir, this._id + "");
+});
 
 fileSchema.pre("validate", async function(next){
-	const promise = new Promise(function(resolve, reject){
-		fs.stat(this.fileLocation, function(err, stats){
-			if (err){
-				reject(err);
-			}else{
-				resolve(stats);
-			}
-		})
-	}.bind(this))
 	try{
-		var stats = await promise;
+		var stats = await fsStat(this.fileLocation);
 	}catch(err){
-		const props = {
-			type: 'Saving error',
-			message: "Error occured when saving file.",
-		}
-		return next (new ValidatorError(props));
+		return next (new Error("Error occured while saving file"));
 	}
 	this.size = stats.size;
 
@@ -68,11 +57,7 @@ fileSchema.pre("validate", async function(next){
 		await this.populate({path:"owner"}).execPopulate();
 	}
 	if (this.parent && !await this.parent.userCanEdit(this.owner)){
-		const props = {
-			type: 'Access Denied',
-			message: "Access denied",
-		}
-		return next (new ValidatorError(props));
+		return next (new Error("Access Denied"));
 	}
 
 	next();
@@ -89,16 +74,7 @@ fileSchema.methods.saveFile = async function(file){
 }
 
 fileSchema.pre("remove", async function(next){
-	let promise = new Promise(function(resolve, reject){
-		fs.unlink(this.fileLocation, function(err){
-			if (err){
-				reject(err);
-			}else{
-				resolve();
-			}
-		});
-	}.bind(this));
-	await promise;
+	await fsUnlink(this.fileLocation);
 	next();
 });
 

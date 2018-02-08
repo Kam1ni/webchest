@@ -1,6 +1,6 @@
 const express = require("express");
 const JWT = require("jsonwebtoken");
-const config = require("../config");
+const authConfig = require("../config/auth.json");
 const User = require("../models/user");
 const mAuth = require("../middlewares/auth");
 
@@ -20,7 +20,7 @@ router.post("/login", async function(req, res, next){
 		if (!valid){
 			throw new Error("Invalid login");
 		}
-		let token = JWT.sign({userId: user._id, date: new Date()} , config.auth.secret);
+		let token = JWT.sign({userId: user._id, date: new Date()} , authConfig.secret);
 		let deviceName = (req.headers['x-forwarded-for'] || req.connection.remoteAddress) + " at " + new Date().toLocaleDateString()
 		user.tokens.push({token, deviceName});
 		await user.save();
