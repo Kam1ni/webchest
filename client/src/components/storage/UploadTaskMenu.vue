@@ -1,5 +1,5 @@
 <template>
-	<v-progress-circular color="teal" :value="totalProgress" :rotate="-90">{{totalProgress}}</v-progress-circular>
+	<v-progress-circular v-if="showProgressBar" color="teal" :value="totalProgress" :rotate="-90">{{totalProgress}}</v-progress-circular>
 </template>
 
 <script>
@@ -18,6 +18,9 @@
 		computed:{
 			totalProgress(){
 				return Math.round(this.tasks.reduce(function(total, val){return total + val.progressPercent},0));
+			},
+			showProgressBar(){
+				return this.tasks.length > 0;
 			}
 		},
 		props: ["value", "tasks"]

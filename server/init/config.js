@@ -22,7 +22,7 @@ const defaultAuthFile = {
 }
 
 const defaultClientFile = {
-	"server-endpoint": ""
+	"server-endpoint": "/"
 }
 
 function createFileIfNotExist(filename, config){
