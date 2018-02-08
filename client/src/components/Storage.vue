@@ -1,7 +1,9 @@
 <template>
 	<v-layout row wrap fill-height>
 		<v-flex xs12>
-			<app-nav :current="dir"/>
+			<app-nav :current="dir">
+				<app-upload-task-menu slot="toolbar-items" :tasks="tasks"/>
+			</app-nav>
 		</v-flex>
 		<v-flex :teal="dragover" class="item-container" dark xs12 fill-height row @drop.prevent="onFileDrop" @dragleave="dragover=false" @dragover.prevent="dragover=true" @contextmenu.prevent="showMenu($event)">
 			<v-list v-if="dir" style="background:transparent;">
@@ -37,9 +39,10 @@
 <script>
 	import ContextMenu from './storage/ContextMenu.vue'
 	import Nav from './storage/Nav.vue';
+	import UploadTaskMenu from './storage/UploadTaskMenu.vue';
 	import Dir from '../classes/dir';
 	import File from '../classes/file';
-
+	
 	export default {
 		data(){
 			return {
@@ -57,7 +60,8 @@
 					index: 0
 				},
 				error: "",
-				dragover: false
+				dragover: false,
+				tasks: []
 			}
 		},
 		watch:{
@@ -108,6 +112,12 @@
 						}else{
 							let uploader = new Dir.Uploader(entry, this.dir);
 							await uploader.prepareUploader();
+							this.tasks.push(uploader);
+							uploader.on("done", ()=>{
+								setTimeout(()=>{
+									this.tasks.splice(this.tasks.indexOf(uploader), 1);
+								}, 3000);
+							});
 							let directory = await uploader.upload();
 							this.dir.directories.push(directory);
 						}
@@ -139,6 +149,7 @@
 		components:{
 			'app-nav':Nav,
 			'app-context-menu': ContextMenu,
+			'app-upload-task-menu':UploadTaskMenu
 		}
 	}
 </script>

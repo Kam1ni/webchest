@@ -150,7 +150,13 @@ Dir.Uploader = class extends EventEmitter {
 		this.uploadedItems += progress;
 		this.emit("progress", progress);
 		if (this.logProgress)
-			console.log(`Uploaded ${this.uploadedItems}/${this.itemCount}`);
+			console.log(`Uploaded ${this.uploadedItems}/${this.itemCount} (${this.progressPercent})`);
+		if (this.progressPercent == 100)
+			this.emit("done");
+	}
+
+	get progressPercent() {
+		return ( 1.0 * this.uploadedItems / this.itemCount) * 100;
 	}
 
 	async upload(){

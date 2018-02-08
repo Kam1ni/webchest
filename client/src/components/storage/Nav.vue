@@ -6,6 +6,10 @@
 				{{item.name}}
 			</a>
 		</template>
+		<v-spacer/>
+		<slot name="toolbar-items">
+
+		</slot>
 	</v-toolbar>
 </template>
 
