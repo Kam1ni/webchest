@@ -87,7 +87,7 @@ export default class File {
 File.Uploader = class {
 	constructor(fileItem, parent){
 		this.file = fileItem;
-		this.parent = parent._id;
+		this.parent = parent ? parent._id : null;
 	}
 
 	async getFile(){
@@ -105,7 +105,6 @@ File.Uploader = class {
 			data.set('parent', this.parent);
 		}
 		data.set('file', await this.getFile());
-		console.log(data.get("file"));
 		let file = new File((await resource.save({}, data)).body);
 		return file;
 	}

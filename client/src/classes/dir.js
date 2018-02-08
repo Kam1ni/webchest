@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import File from './file';
+import EventEmitter from 'events'
 
 let resource = null;
 
@@ -111,46 +112,60 @@ export default class Dir{
 
 }
 
-Dir.Uploader = class {
-	constructor(dirItem, parent){
+Dir.Uploader = class extends EventEmitter {
+	constructor(dirItem, parent = null){
+		super();
 		this.dirItem = dirItem;
-		this.parent = parent._id;
-		this.progress = 0;
+		this.parent = parent ? parent._id : null;
+		this.uploadedItems = 0;
+		this.itemCount = 0;
+		this.directories = [];
+		this.files = [];
+		this.logProgress = true;
+	}
+
+	async prepareUploader(){
+		let promise = new Promise((resolve, reject)=>{
+			let dirReader = this.dirItem.createReader();
+			dirReader.readEntries(async (results) => {
+				for (let item of results){
+					if (item.isFile){
+						let uploader = new File.Uploader(item);;
+						this.itemCount++;
+						this.files.push(uploader);
+					}else{
+						let uploader = new Dir.Uploader(item);
+						await uploader.prepareUploader();
+						this.itemCount += uploader.itemCount;
+						this.directories.push(uploader);
+					}
+				}
+				resolve();
+			});
+		});
+		await promise;
+	}
+
+	onProgress(progress=1){
+		this.uploadedItems += progress;
+		this.emit("progress", progress);
+		if (this.logProgress)
+			console.log(`Uploaded ${this.uploadedItems}/${this.itemCount}`);
 	}
 
 	async upload(){
 		let dir = new Dir({name: this.dirItem.name, parent: this.parent || null});
-		console.log("Saving dir")
 		await dir.save();
-		console.log("dir saved")
-		let promise = new Promise(async (resolve, reject)=>{
-			let dirReader = this.dirItem.createReader();
-			dirReader.readEntries(async (results) => {
-				try{
-					console.log(results);
-					for (let item of results){
-						if (item.isFile){
-							console.log("uploading file");
-							let uploader = new File.Uploader(item, dir);;
-							uploader.upload().catch((err)=>{
-								console.error(err);
-							});
-						}else{
-							console.log("uploading dir");
-							let uploader = new Dir.Uploader(item, dir);
-							uploader.upload().catch((err)=>{
-								console.error(err);
-							});
-						}
-					}
-					resolve();
-				}catch(err){
-					reject(err);
-				}
-			});
-		});
-		console.log("Waiting for promise");
-		await promise;
+		for (let fileUploader of this.files){
+			fileUploader.parent = dir._id;
+			fileUploader.upload().then((file)=>{this.onProgress();}).catch(err=>{console.error(err); this.onProgress();});
+		}
+		for (let dirUploader of this.directories){
+			dirUploader.on("progress", (progress)=>{this.onProgress(progress)});
+			dirUploader.parent = dir._id;
+			dirUploader.logProgress = false;
+			dirUploader.upload().then().catch(err=>{console.error(err)});
+		}
 		return dir;
 	}
 }

@@ -107,6 +107,7 @@
 							this.dir.files.push(file);
 						}else{
 							let uploader = new Dir.Uploader(entry, this.dir);
+							await uploader.prepareUploader();
 							let directory = await uploader.upload();
 							this.dir.directories.push(directory);
 						}
