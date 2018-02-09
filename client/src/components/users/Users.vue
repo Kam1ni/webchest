@@ -29,7 +29,7 @@
 </template>
 
 <script>
-	import EditUser from './users/EditUser.vue';
+	import EditUser from './EditUser.vue';
 	export default {
 		data(){
 			return {

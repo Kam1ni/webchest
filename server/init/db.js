@@ -15,6 +15,7 @@ function createConnectionString(dbConfig){
 
 async function createUsers(){
 	const authConfig = require("../config/auth.json");
+	const User = require("../models/user");
 	
 	for (let confUser of authConfig.users){
 		let user = await User.findById(confUser._id);
@@ -29,8 +30,6 @@ async function createUsers(){
 
 module.exports = async function(){
 	const serverConfig = require("../config/server.json");
-	const User = require("../models/user");
-	console.log(serverConfig.db.authDb);
 	await mongoose.connect(createConnectionString(serverConfig.db), {useMongoClient: true});
 	console.log("Connected to database");
 	await createUsers();

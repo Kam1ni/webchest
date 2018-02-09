@@ -1,36 +1,9 @@
 <template>
 	<v-app>
 		<template v-if="loggedIn">
-			<v-navigation-drawer app clipped fixed v-model="drawer">
-				<v-list>
-					<v-list-tile to="/storage" active-class="primary white--text">
-						<v-list-tile-content>
-							Storage
-						</v-list-tile-content>
-					</v-list-tile>
-					<v-list-tile to="/settings" active-class="primary white--text">
-						<v-list-tile-content>
-							Settings
-						</v-list-tile-content>
-					</v-list-tile>
-					<v-list-tile to="/users" v-if="user.isAdmin" active-class="primary white--text">
-						<v-list-tile-content>
-							Users
-						</v-list-tile-content>
-					</v-list-tile>
-					<v-list-tile @click="logout" active-class="primary white--text">
-						<v-list-tile-content>
-							Logout
-						</v-list-tile-content>
-					</v-list-tile>
-				</v-list>
-			</v-navigation-drawer>
-
-			<v-toolbar app fixed clipped-left class="primary" dark>
-				<v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        		<span class="hidden-xs-only">WebChest</span>
-			</v-toolbar>
-
+			<AppNav v-model="drawer" :user="user"/>
+			<AppHeader @drawer="drawer = !drawer"/>
+			
 			<v-content>
 				<transition name="slide-x-transition" mode="out-in">
 					<router-view/>
@@ -38,16 +11,14 @@
 			</v-content>
 		</template>
 
-		<v-layout row justify-center wrap align-center class="teal-background" fill-height v-if="!loggedIn">
-			<v-flex xs10 sm8 md6>
-				<app-login></app-login>
-			</v-flex>
-		</v-layout>
+		<app-login  v-else></app-login>
 	</v-app>
 </template>
 
 <script>
-import Login from './components/Login.vue';
+import Login from './components/login/Login.vue';
+import Nav from './components/TheNav.vue';
+import Header from './components/TheHeader.vue';
 
 export default {
 	name: 'App',
@@ -59,19 +30,9 @@ export default {
 		}
 	},
 	components: {
-		'app-login': Login
-	},
-	methods: {
-		async logout(){
-			try{
-				await this.$AuthService.logout();
-			}catch(err){
-
-			}
-		},
-		profile(){
-			this.$router.push("/profile");
-		}
+		'app-login': Login,
+		'AppNav': Nav,
+		'AppHeader': Header
 	},
 	created(){
 		this.loggedIn = this.$AuthService.isLoggedIn();
@@ -87,9 +48,3 @@ export default {
 	}
 }
 </script>
-
-<style>
-.teal-background{
-	background-color: #004d40;
-}
-</style>

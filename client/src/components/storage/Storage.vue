@@ -37,11 +37,11 @@
 </template>
 
 <script>
-	import ContextMenu from './storage/ContextMenu.vue'
-	import Nav from './storage/Nav.vue';
-	import UploadTaskMenu from './storage/UploadTaskMenu.vue';
-	import Dir from '../classes/dir';
-	import File from '../classes/file';
+	import ContextMenu from './ContextMenu.vue'
+	import Nav from './Nav.vue';
+	import UploadTaskMenu from './UploadTaskMenu.vue';
+	import Dir from '../../classes/dir';
+	import File from '../../classes/file';
 	
 	export default {
 		data(){
