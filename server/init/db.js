@@ -13,13 +13,9 @@ function createConnectionString(dbConfig){
 	return string;
 }
 
-module.exports = async function(){
-	const serverConfig = require("../config/server.json");
+async function createUsers(){
 	const authConfig = require("../config/auth.json");
-	const User = require("../models/user");
-	console.log(serverConfig.db.authDb);
-	await mongoose.connect(createConnectionString(serverConfig.db), {useMongoClient: true});
-	console.log("Connected to database");
+	
 	for (let confUser of authConfig.users){
 		let user = await User.findById(confUser._id);
 		if (!user){
@@ -29,4 +25,13 @@ module.exports = async function(){
 		await user.save();
 		console.log(`${user.isNew ? "Created" : "Updated"} user ${user.username}`);
 	}
+}
+
+module.exports = async function(){
+	const serverConfig = require("../config/server.json");
+	const User = require("../models/user");
+	console.log(serverConfig.db.authDb);
+	await mongoose.connect(createConnectionString(serverConfig.db), {useMongoClient: true});
+	console.log("Connected to database");
+	await createUsers();
 }
