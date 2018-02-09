@@ -7,10 +7,11 @@ const defaultServerFile = {
 	port: 3000,
 	fileDir: path.resolve(__dirname, "../files"),
 	db:{
-		host: "mongodb://localhost:27017",
+		host: "localhost:27017",
 		database: "webchest",
-		username: "NOT YET IMPLEMENTED",
-		password: "NOT YET IMPLEMENTED"
+		username: null,
+		password: null,
+		authdb: null
 	}
 }
 
