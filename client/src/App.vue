@@ -37,13 +37,9 @@ export default {
 	created(){
 		this.loggedIn = this.$AuthService.isLoggedIn();
 		this.user = this.$AuthService.user;
-		this.$AuthService.on("login", (user)=>{
-			this.user = user;
-			this.loggedIn = true;
-		});
-		this.$AuthService.on("logout", ()=>{
-			this.loggedIn = false;
-			this.user = null;
+		this.$AuthService.on("user", (user)=>{
+			this.loggedIn = this.$AuthService.isLoggedIn();
+			this.user = this.$AuthService.user;
 		});
 	}
 }
