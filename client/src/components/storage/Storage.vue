@@ -31,8 +31,7 @@
 				</v-list-tile>
 			</v-list>
 		</v-flex>
-		<app-context-menu :x="contextMenu.x" :y="contextMenu.y" v-model="contextMenu.show" :item="clickedItem.item" :type="clickedItem.type" @error="showError($event)" :dir="dir"></app-context-menu>
-		<app-error v-model="error"></app-error>
+		<app-context-menu :x="contextMenu.x" :y="contextMenu.y" v-model="contextMenu.show" :item="clickedItem.item" :type="clickedItem.type" :dir="dir"></app-context-menu>
 	</v-layout>
 </template>
 
@@ -59,7 +58,6 @@
 					type: null,
 					index: 0
 				},
-				error: "",
 				dragover: false,
 				tasks: []
 			}
@@ -91,14 +89,6 @@
 					this.contextMenu.show = true;
         		});
 			},
-			showError(err){
-				if (err.body){
-					this.error = err.body.message;
-				}else{
-					this.error = err.message;
-				}
-				console.log(err.stack);
-			},
 			async onFileDrop(event){
 				this.dragover = false;
 				let dt = event.dataTransfer;
@@ -122,7 +112,7 @@
 							this.dir.directories.push(directory);
 						}
 					}catch(err){
-						this.showError(err);
+						this.$Error.showHttpError(err);
 					}
 				}
 			},
@@ -131,8 +121,7 @@
 				try{
 					await item.download();
 				}catch(err){
-					console.log(err);
-					this.showError(item);
+					this.$Error.showHttpError(err);
 				}
 			}
 		},
@@ -142,7 +131,7 @@
 			try{
 				this.dir = await Dir.getDirectory(this.id);
 			}catch(err){
-				console.log(err);
+				this.$Error.showHttpError(err);
 			}
 			this.fileResource = this.$resource('file{/id}');
 		},

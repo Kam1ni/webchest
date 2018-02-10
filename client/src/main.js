@@ -7,7 +7,6 @@ import {init as dirInit} from './classes/dir';
 import {init as fileInit} from './classes/file';
 import Auth from './services/auth-service';
 import Err from './services/error-service';
-import AppError from './components/common/Error.vue';
 import ConfirmDialog from './components/common/ConfirmDialog.vue';
 
 
@@ -48,7 +47,6 @@ Vue.use(Vuetify, {
 	}
 });
 
-Vue.component('app-error', AppError);
 Vue.component("app-confirm-dialog",ConfirmDialog );
 
 console.log(new Vue({

@@ -20,9 +20,11 @@ export default {
 			},
 			methods:{
 				showError(error){
+					console.log(error);
 					this.error = error;
 				},
 				showHttpError(error){
+					console.log(error);
 					if (error.body)
 						this.error = error.body.message;
 					else

@@ -94,7 +94,7 @@
 						this.dir.directories.push(dir);
 						console.log(dir);
 					}catch(err){
-						this.$emit("error", err);
+						this.$Error.showHttpError(err);
 					}
 				}
 				this.textEditField.title = "New Folder";
@@ -106,7 +106,7 @@
 					try{
 						await this.item.rename(e);
 					}catch(err){
-						this.$emit("error", err);
+						this.$Error.showHttpError(err);
 					}
 				}
 				this.textEditField.title = `Rename "${this.item.name}"`;
@@ -119,7 +119,7 @@
 						await this.item.move(e);
 						this.dir.removeItem(this.item);
 					}catch(err){
-						this.$emit("error",err);
+						this.$Error.showHttpError(err);
 					}
 				}
 				this.navigationMenu.title = `Move ${this.item.name}`;
@@ -131,7 +131,7 @@
 					await this.item.delete();
 					this.dir.removeItem(this.item);
 				}catch(err){
-					this.$emit("error",err)
+					this.$Error.showHttpError(err);
 				}
 			}
 		},components:{
