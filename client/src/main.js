@@ -5,7 +5,7 @@ import Vuetify from 'vuetify';
 import VueResource from 'vue-resource';
 import {init as dirInit} from './classes/dir';
 import {init as fileInit} from './classes/file';
-import AuthService from './services/auth-service';
+import Auth from './services/auth-service';
 import AppError from './components/common/Error.vue';
 import ConfirmDialog from './components/common/ConfirmDialog.vue';
 
@@ -26,12 +26,12 @@ Vue.http.interceptors.push(function(req,next){
 	}
 	next((res)=>{
 		if (res.status == 401){
-			Vue.AuthService.tokenIsInvalid();
+			Vue.Auth.tokenIsInvalid();
 		}
 	});
 });
 
-Vue.use(AuthService);
+Vue.use(Auth);
 
 dirInit();
 fileInit();

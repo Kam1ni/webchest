@@ -1,7 +1,7 @@
 <template>
 	<v-app>
-		<template v-if="loggedIn">
-			<AppNav v-model="drawer" :user="user"/>
+		<template v-if="$Auth.loggedIn">
+			<AppNav v-model="drawer"/>
 			<AppHeader @drawer="drawer = !drawer"/>
 			
 			<v-content>
@@ -24,23 +24,13 @@ export default {
 	name: 'App',
 	data(){
 		return {
-			loggedIn: false,
 			drawer: null,
-			user: null
 		}
 	},
 	components: {
 		'app-login': Login,
 		'AppNav': Nav,
 		'AppHeader': Header
-	},
-	created(){
-		this.loggedIn = this.$AuthService.isLoggedIn();
-		this.user = this.$AuthService.user;
-		this.$AuthService.on("user", (user)=>{
-			this.loggedIn = this.$AuthService.isLoggedIn();
-			this.user = this.$AuthService.user;
-		});
 	}
 }
 </script>

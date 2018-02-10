@@ -34,7 +34,7 @@
 		methods:{
 			async login(){
 				try{
-					await this.$AuthService.login(this.username, this.password);
+					await this.$Auth.login(this.username, this.password);
 				}catch(err){
 					console.log(err)
 					if (err.body){

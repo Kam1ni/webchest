@@ -1,5 +1,5 @@
 <template>
-	<v-layout wrap v-if="user">
+	<v-layout wrap v-if="$Auth.user">
 		<v-flex xs12>
 			<v-card>
 				<v-card-title class="headline">
@@ -42,11 +42,11 @@
 						</v-flex>
 						<v-flex xs12 sm8>
 							<v-list>
-								<v-list-tile v-for="(token, i) in user.tokens" :key="i">
+								<v-list-tile v-for="(token, i) in $Auth.user.tokens" :key="i">
 									<v-list-tile-content>
 										{{token.deviceName}}
 									</v-list-tile-content>
-									<v-list-tile-avatar @click="confirmRemoveToken(token)" v-if="token.token != $AuthService.token">
+									<v-list-tile-avatar @click="confirmRemoveToken(token)" v-if="token.token != $Auth.token">
 										<v-icon>delete</v-icon>
 									</v-list-tile-avatar>
 									<v-list-tile-avatar v-else>
@@ -69,7 +69,6 @@
 	export default {
 		data(){
 			return {
-				user: null,
 				passwordDialog: false,	
 				password:{
 					valid: false,
@@ -89,7 +88,7 @@
 		methods:{
 			async changePassword(){
 				try{
-					await this.$AuthService.changePassword(this.password.currentPassword, this.password.newPassword);
+					await this.$Auth.changePassword(this.password.currentPassword, this.password.newPassword);
 					this.passwordDialog = false;
 				}catch(err){
 					this.$emit("error", err);
@@ -97,7 +96,7 @@
 			},
 			async removeToken(token){
 				try{
-					await this.$AuthService.removeToken(token.token);
+					await this.$Auth.removeToken(token.token);
 				}catch(err){
 					this.$emit("error", err)
 				}
@@ -106,12 +105,6 @@
 				this.toRemoveToken = token;
 				this.removeTokenDialog = true;
 			}
-		},
-		created(){
-			this.user = this.$AuthService.user;
-			this.$AuthService.on("login", (user)=>{
-				this.user = user;
-			});
-		},
+		}
 	}
 </script>

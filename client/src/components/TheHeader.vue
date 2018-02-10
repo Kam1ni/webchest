@@ -9,7 +9,7 @@
 	export default {
 		methods:{
 			drawerClicked(){
-				this.$emit("drawer")
+				this.$emit("drawer");
 			}
 		}
 	}
