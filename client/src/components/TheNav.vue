@@ -43,8 +43,8 @@
 			async logout(){
 				try{
 					await this.$Auth.logout();
-			}catch(err){
-				
+				}catch(err){
+					this.$Error.showHttpError(err);
 				}
 			},
 		}

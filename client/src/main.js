@@ -6,6 +6,7 @@ import VueResource from 'vue-resource';
 import {init as dirInit} from './classes/dir';
 import {init as fileInit} from './classes/file';
 import Auth from './services/auth-service';
+import Err from './services/error-service';
 import AppError from './components/common/Error.vue';
 import ConfirmDialog from './components/common/ConfirmDialog.vue';
 
@@ -32,6 +33,7 @@ Vue.http.interceptors.push(function(req,next){
 });
 
 Vue.use(Auth);
+Vue.use(Err);
 
 dirInit();
 fileInit();
@@ -49,9 +51,9 @@ Vue.use(Vuetify, {
 Vue.component('app-error', AppError);
 Vue.component("app-confirm-dialog",ConfirmDialog );
 
-new Vue({
+console.log(new Vue({
 	el: '#app',
 	router,
 	components: { App },
 	template: '<App/>',
-});
+}));
