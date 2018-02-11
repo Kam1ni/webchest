@@ -28,7 +28,7 @@
 <script>
 	export default {
 		data(){
-			return {drawer: false};
+			return {drawer: null};
 		},
 		watch:{
 			value(newVal){
