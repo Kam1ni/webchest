@@ -6,7 +6,18 @@ const User = require("../models/user");
 
 module.exports = function(server){
 	const io = socketIo(server);
-	const subs = [];
+	const dirSubs = [];
+
+	EventBus.on("dir", function(e){
+		let subed = dirSubs.filter((sub)=>{
+			if (e.doc.equals(sub.id)) return true;
+			if (e.doc.parent && e.doc.parent.equals(sub.id)) return true;
+			return false;
+		});
+		for (let sub of subed){
+			sub.client.emit(e);
+		}
+	});
 
 	io.on("connection", function(client){
 		client.on("sub/d", async (data)=>{
@@ -19,21 +30,21 @@ module.exports = function(server){
 				if (!await dir.userCanView(user)){
 					throw new Error("Permission denied");
 				}
-				subs.push({client, dirId: dir._id});
+				dirSubs.push({client, id: dir._id});
 			}catch(err){
 				client.emit("ERROR", err.message);
 			}
 		});
 		client.on("unsub/d", (data)=>{
-			let sub = subs.find((sub)=>{
-				return sub.client == client && dirId == data.id;
+			let sub = dirSubs.find((sub)=>{
+				return sub.client == client && id == data.id;
 			});
-			subs.splice(subs.indexOf(sub), 1);
+			dirSubs.splice(dirSubs.indexOf(sub), 1);
 		});
 		client.on("disconnect", function(){
-			for (let sub of subs){
+			for (let sub of dirSubs){
 				if (client == sub.client){
-					subs.splice(subs.indexOf(subs), 1);
+					dirSubs.splice(dirSubs.indexOf(dirSubs), 1);
 				}
 			}
 		});

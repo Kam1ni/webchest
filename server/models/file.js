@@ -94,13 +94,14 @@ schema.methods.userCanEdit = async function(user){
 }
 
 schema.post("remove", async function(next){
-	EventBus.emit("file/remove", this);
+	EventBus.emit("file", {event:"remove", doc:this});
 	next();
 });
 
 schema.post("save", async function(next){
-	EventBus.emit("file/update", this);
+	EventBus.emit("file", {event:"update", doc:this});
 	next();
 });
+
 
 module.exports = File = mongoose.model("File", schema);

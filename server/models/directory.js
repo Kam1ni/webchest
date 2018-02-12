@@ -147,12 +147,12 @@ schema.pre("remove", async function(next){
 });
 
 schema.post("remove", async function(next){
-	EventBus.emit("dir/remove", this);
+	EventBus.emit("dir", {event:"remove", doc:this});
 	next();
 });
 
 schema.post("save", async function(next){
-	EventBus.emit("dir/update", this);
+	EventBus.emit("dir", {event:"update", doc:this});
 	next();
 });
 
