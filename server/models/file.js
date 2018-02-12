@@ -93,14 +93,12 @@ schema.methods.userCanEdit = async function(user){
 	return false;
 }
 
-schema.post("remove", async function(next){
-	EventBus.emit("file", {event:"remove", doc:this});
-	next();
+schema.post("remove", async function(doc){
+	EventBus.emit("file", {event:"remove", doc});
 });
 
-schema.post("save", async function(next){
-	EventBus.emit("file", {event:"update", doc:this});
-	next();
+schema.post("save", async function(doc){
+	EventBus.emit("file", {event:"update", doc});
 });
 
 

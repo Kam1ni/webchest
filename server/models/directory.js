@@ -146,14 +146,13 @@ schema.pre("remove", async function(next){
 	next();
 });
 
-schema.post("remove", async function(next){
-	EventBus.emit("dir", {event:"remove", doc:this});
-	next();
+schema.post("remove", async function(doc){
+	EventBus.emit("dir", {event:"remove", doc});
 });
 
-schema.post("save", async function(next){
-	EventBus.emit("dir", {event:"update", doc:this});
-	next();
+schema.post("save", async function(doc){
+	console.log("post save");
+	EventBus.emit("dir", {event:"update", doc});
 });
 
 module.exports = Directory = mongoose.model("Directory", schema);

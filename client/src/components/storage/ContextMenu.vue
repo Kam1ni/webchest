@@ -88,7 +88,7 @@
 		methods:{
 			newDir(){
 				this.textEditField.submit = async (e) => {
-					let dir = new Dir({name :e, parent: this.id});
+					let dir = new Dir({name :e, parent: this.$route.params.id});
 					try{
 						await dir.save();
 						this.dir.directories.push(dir);

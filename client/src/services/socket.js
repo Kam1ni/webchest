@@ -16,6 +16,10 @@ export default {
 				},
 				unsub(event, callback){
 					this.socket.removeListener(event, callback);
+				},
+				emit(event, data){
+					data.token = Vue.Auth.token;
+					this.socket.emit(event, data);
 				}
 			}
 		});

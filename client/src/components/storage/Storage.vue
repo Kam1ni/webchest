@@ -63,13 +63,16 @@
 			}
 		},
 		watch:{
-			'$route': async function(){
+			'$route': async function(newVal, oldVal){
 				this.id = this.$route.params.id;
 				try{
 					this.dir = await Dir.getDirectory(this.id);
 				}catch(err){
 					console.log(err);
 				}
+				console.log(oldVal);
+				this.$Socket.emit("unsub/d", {id: oldVal.params.id});
+				this.$Socket.emit("sub/d", {id: this.id});
         	}
 		},
 		methods:{
@@ -115,6 +118,14 @@
 				this.$Error.showHttpError(err);
 			}
 			this.fileResource = this.$resource('file{/id}');
+			this.$Socket.on("dir", async (e)=>{
+				try{
+					this.dir = await Dir.getDirectory(this.id);
+				}catch(err){
+					console.log(err);
+				}
+			});
+			this.$Socket.emit("sub/d", {id: this.id});
 		},
 		components:{
 			'app-nav':Nav,

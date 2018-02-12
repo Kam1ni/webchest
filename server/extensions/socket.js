@@ -15,7 +15,7 @@ module.exports = function(server){
 			return false;
 		});
 		for (let sub of subed){
-			sub.client.emit(e);
+			sub.client.emit("dir", e);
 		}
 	});
 
@@ -23,21 +23,22 @@ module.exports = function(server){
 		client.on("sub/d", async (data)=>{
 			try{
 				let dir = await Dir.findById(data.id);
-				let user = await User.findOne({tokens:{$elemMatch: {token: req.headers.authorization}}});
+				let user = await User.findOne({tokens:{$elemMatch: {token: data.token}}});
 				if (!user){
 					throw new Error("Invalid token");
 				}
-				if (!await dir.userCanView(user)){
+				if (dir && !await dir.userCanView(user)){
 					throw new Error("Permission denied");
 				}
-				dirSubs.push({client, id: dir._id});
+				dirSubs.push({client, id: data.id});
 			}catch(err){
+				console.log(err);
 				client.emit("ERROR", err.message);
 			}
 		});
 		client.on("unsub/d", (data)=>{
 			let sub = dirSubs.find((sub)=>{
-				return sub.client == client && id == data.id;
+				return sub.client == client && sub.id == data.id;
 			});
 			dirSubs.splice(dirSubs.indexOf(sub), 1);
 		});
