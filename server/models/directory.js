@@ -3,12 +3,13 @@ const idValidator = require("mongoose-id-validator");
 const archiver = require("archiver");
 const fs = require("fs");
 const path = require("path");
+const EventBus = require("../extensions/event-bus");
 
 const File = require("./file");
 const serverConfig = require("../config/server.json");
 const ValidatorError = mongoose.Error.ValidatorError;
 
-const directorySchema = new mongoose.Schema({
+const schema = new mongoose.Schema({
 	name: {
 		type: String,
 		required: true,
@@ -31,27 +32,27 @@ const directorySchema = new mongoose.Schema({
 	}
 });
 
-directorySchema.methods.getContent = async function(){
+schema.methods.getContent = async function(){
 	let directories = await Directory.find({parent:this});
 	let files = await File.find({parent: this});
 	return {directories, files}
 }
 
-directorySchema.methods.userCanView = async function(user){
+schema.methods.userCanView = async function(user){
 	if (this.owner.equals(user._id)){
 		return true;
 	}
 	return false;
 }
 
-directorySchema.methods.userCanEdit = async function(user){
+schema.methods.userCanEdit = async function(user){
 	if (this.owner.equals(user._id)){
 		return true;
 	}
 	return false;
 }
 
-directorySchema.pre("validate", async function(next){
+schema.pre("validate", async function(next){
 	let populatedFields = [];
 	if (!this.populated("parent")){
 		await this.populate("parent").execPopulate();
@@ -90,7 +91,7 @@ directorySchema.pre("validate", async function(next){
 	next();
 });
 
-directorySchema.methods.createZip = async function(){
+schema.methods.createZip = async function(){
 	let promise = new Promise(async (resolve, reject)=>{
 		let fileName = path.join(serverConfig.fileDir, this._id + "-" + new Date().getTime() + ".zip");
 		let output = fs.createWriteStream(fileName);
@@ -133,7 +134,7 @@ directorySchema.methods.createZip = async function(){
 	return await promise;
 }
 
-directorySchema.pre("remove", async function(next){
+schema.pre("remove", async function(next){
 	let content = await this.getContent();
 	for (let dir of content.directories){
 		dir.remove();
@@ -145,4 +146,14 @@ directorySchema.pre("remove", async function(next){
 	next();
 });
 
-module.exports = Directory = mongoose.model("Directory", directorySchema);
+schema.post("remove", async function(next){
+	EventBus.emit("dir/remove", this);
+	next();
+});
+
+schema.post("save", async function(next){
+	EventBus.emit("dir/update", this);
+	next();
+});
+
+module.exports = Directory = mongoose.model("Directory", schema);

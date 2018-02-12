@@ -23,7 +23,8 @@
     "mongoose": "^4.13.10",
     "mongoose-bcrypt": "^1.5.0",
     "mongoose-hidden": "^1.5.1",
-    "mongoose-id-validator": "^0.4.3"
+    "mongoose-id-validator": "^0.4.3",
+    "socket.io": "^2.0.4"
   },
   "devDependencies": {
     "nodemon": "^1.14.11"

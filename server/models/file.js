@@ -4,10 +4,11 @@ const fs = require("fs");
 const path = require("path");
 const serverConfig = require("../config/server.json");
 const util = require("util");
+const EventBus = require("../extensions/event-bus");
 const fsStat = util.promisify(fs.stat);
 const fsUnlink = util.promisify(fs.unlink);
 
-const fileSchema = new mongoose.Schema({
+const schema = new mongoose.Schema({
 	name: {
 		type: String,
 		required: true,
@@ -38,11 +39,11 @@ const fileSchema = new mongoose.Schema({
 	}
 });
 
-fileSchema.virtual("fileLocation").get(function(){
+schema.virtual("fileLocation").get(function(){
 	return path.resolve(serverConfig.fileDir, this._id + "");
 });
 
-fileSchema.pre("validate", async function(next){
+schema.pre("validate", async function(next){
 	try{
 		var stats = await fsStat(this.fileLocation);
 	}catch(err){
@@ -63,7 +64,7 @@ fileSchema.pre("validate", async function(next){
 	next();
 });
 
-fileSchema.methods.saveFile = async function(file){
+schema.methods.saveFile = async function(file){
 	if (!this._id){
 		this._id = mongoose.Types.ObjectId();
 	}
@@ -73,24 +74,33 @@ fileSchema.methods.saveFile = async function(file){
 	await this.save();
 }
 
-fileSchema.pre("remove", async function(next){
+schema.pre("remove", async function(next){
 	await fsUnlink(this.fileLocation);
 	next();
 });
 
-fileSchema.methods.userCanView = async function(user){
+schema.methods.userCanView = async function(user){
 	if (this.owner.equals(user._id)){
 		return true;
 	}
 	return false;
 }
 
-fileSchema.methods.userCanEdit = async function(user){
+schema.methods.userCanEdit = async function(user){
 	if (this.owner.equals(user._id)){
 		return true;
 	}
 	return false;
 }
 
+schema.post("remove", async function(next){
+	EventBus.emit("file/remove", this);
+	next();
+});
 
-module.exports = File = mongoose.model("File", fileSchema);
+schema.post("save", async function(next){
+	EventBus.emit("file/update", this);
+	next();
+});
+
+module.exports = File = mongoose.model("File", schema);

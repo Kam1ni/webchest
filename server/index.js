@@ -33,6 +33,7 @@ init().then(function(){
 	});
 
 	const httpServer = http.createServer(app);
+	const io = require("./extensions/socket")(httpServer);
 	httpServer.listen(serverConfig.port, serverConfig.host, function(err){
 		if (err){
 			console.error("Could not start server");
