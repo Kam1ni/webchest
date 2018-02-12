@@ -91,29 +91,10 @@
 			},
 			async onFileDrop(event){
 				this.dragover = false;
-				let dt = event.dataTransfer;
-				for (let file of dt.items){
-					try{
-						let entry = file.webkitGetAsEntry();
-						if (entry.isFile){
-							let uploader = new File.Uploader(entry, this.dir);
-							let file = await uploader.upload();
-							this.dir.files.push(file);
-						}else{
-							let uploader = new Dir.Uploader(entry, this.dir);
-							await uploader.prepareUploader();
-							this.tasks.push(uploader);
-							uploader.on("done", ()=>{
-								setTimeout(()=>{
-									this.tasks.splice(this.tasks.indexOf(uploader), 1);
-								}, 3000);
-							});
-							let directory = await uploader.upload();
-							this.dir.directories.push(directory);
-						}
-					}catch(err){
-						this.$Error.showHttpError(err);
-					}
+				try{
+					await this.$Uploader.dropUpload(event);
+				}catch(err){
+					this.$Error.showHttpError(err);
 				}
 			},
 			async downloadItem(item){
