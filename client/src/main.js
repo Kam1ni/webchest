@@ -7,15 +7,18 @@ import {init as dirInit} from './classes/dir';
 import {init as fileInit} from './classes/file';
 import Auth from './services/auth-service';
 import Err from './services/error-service';
+import Socket from './services/socket'
 import ConfirmDialog from './components/common/ConfirmDialog.vue';
 
-
+Vue.use(Socket);
 Vue.use(VueResource);
 if (process.env.NODE_ENV == "development"){
 	Vue.http.options.root = "http://localhost:3000/";
+	Vue.Socket.connect("http://localhost:3000/");
 }else{
 	Vue.http.get("/client").then((response)=>{
 		Vue.http.options.root = response.body["server-endpoint"];
+		Vue.Socket.connect(response.body["server-endpoint"]);
 	}).catch((err)=>{
 		console.error(err);
 	})
