@@ -1,5 +1,5 @@
 <template>
-	<v-snackbar :timeout="0" v-model="show" top right color="red darken-3">{{$Error.error}}</v-snackbar>
+	<v-snackbar :timeout="0" v-model="show" color="error" top right>{{$Error.error}}</v-snackbar>
 </template>
 
 <script>
@@ -11,6 +11,7 @@
 		},
 		watch:{
 			"$Error.error"(){
+				console.log(this.$Error);
 				this.show = this.$Error.error != null;
 			}
 		},

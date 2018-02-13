@@ -1,17 +1,19 @@
 <template>
 	<v-app>
-		<template v-if="$Auth.loggedIn">
-			<AppNav v-model="drawer"/>
+		<template v-if="$Auth.user">
+		  	<v-navigation-drawer app clipped fixed v-model="drawer">
+				<AppNav/>
+			</v-navigation-drawer>
+			
 			<AppHeader @drawer="drawer = !drawer"/>
-			<AppError/>
 			<v-content>
 				<transition name="slide-x-transition" mode="out-in">
 					<router-view/>
 				</transition>
 			</v-content>
 		</template>
-
 		<app-login  v-else></app-login>
+		<AppError/>
 	</v-app>
 </template>
 

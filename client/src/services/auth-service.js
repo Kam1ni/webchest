@@ -69,7 +69,7 @@ export default {
 			},
 
 			async created(){
-				this.user = {};
+				this.user = null;
 				if (this.loggedIn){
 					try{
 						await this.fetchProfile();

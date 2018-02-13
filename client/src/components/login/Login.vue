@@ -15,7 +15,6 @@
 					<v-card-actions>
 						<v-btn flat @click="login()">Login</v-btn>
 					</v-card-actions>
-					<app-error v-model="error"></app-error>
 				</v-form>
 			</v-card>
 		</v-flex>
@@ -28,7 +27,6 @@
 			return {
 				username: "",
 				password: "",
-				error: null
 			}
 		},
 		methods:{
@@ -36,12 +34,7 @@
 				try{
 					await this.$Auth.login(this.username, this.password);
 				}catch(err){
-					console.log(err)
-					if (err.body){
-						this.error = err.body.message;
-					}else{
-						this.error = err.message;
-					}
+					this.$Error.showHttpError(err);
 				}
 			}
 		},

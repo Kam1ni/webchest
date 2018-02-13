@@ -8,9 +8,9 @@ export default {
 			},
 			watch:{
 				error(newVal){
-					this.$emit("error", this.error);
 					if (!newVal)
 						return;
+					this.$emit("error", this.error);
 					if (this.timeout)
 						clearTimeout(this.timeout);
 					this.timeout = setTimeout(()=>{
@@ -25,6 +25,8 @@ export default {
 				},
 				showHttpError(error){
 					console.log(error);
+					if (error.status == 0)
+						return this.error = "No connection";
 					if (error.body)
 						this.error = error.body.message;
 					else
