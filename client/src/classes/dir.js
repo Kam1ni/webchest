@@ -8,7 +8,6 @@ export function init(){
 	resource = Vue.resource("dir{/id}");
 }
 
-
 export default class Dir{
 	constructor(data = null){
 		this.directories = [];

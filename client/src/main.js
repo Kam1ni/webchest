@@ -8,6 +8,7 @@ import {init as fileInit} from './classes/file';
 import Auth from './services/auth-service';
 import Err from './services/error-service';
 import ConfirmDialog from './components/common/ConfirmDialog.vue';
+require("vuetify/dist/vuetify.min.css");
 
 
 Vue.use(VueResource);
